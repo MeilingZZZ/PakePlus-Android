@@ -1,0 +1,1219 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>产品 Wiki · 可点击原型</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#e9eef5;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;color:#0f172a;font-size:12px}
+button{font-family:inherit;cursor:pointer}
+.wrap{min-height:100vh;display:flex;gap:24px;justify-content:center;padding:24px 14px;align-items:flex-start}
+.panel{width:290px;background:#fff;border-radius:16px;padding:16px;box-shadow:0 8px 24px rgba(15,23,42,.08);position:sticky;top:24px}
+.panel h1{font-size:16px;margin:0 0 6px}
+.panel p{color:#64748b;line-height:1.6;margin:0 0 10px}
+.panel ul{list-style:none;margin:0;padding:0}
+.panel li{padding:7px 0;border-top:1px dashed #e2e8f0;color:#334155;line-height:1.55}
+.panel li b{color:#1d4ed8}
+.panel .demo{width:100%;border:1px solid #93c5fd;background:#fff;color:#1d4ed8;border-radius:10px;padding:9px;font-weight:700;margin-top:10px}
+.phone{width:390px;height:800px;background:#f8fafc;border:1px solid #cbd5e1;border-radius:40px;overflow:hidden;position:relative;box-shadow:0 24px 60px rgba(15,23,42,.18);display:flex;flex-direction:column}
+.status{flex:0 0 40px;background:#fff;display:flex;justify-content:space-between;align-items:center;padding:0 22px;font-size:11px;font-weight:600;color:#334155;border-bottom:1px solid #e2e8f0}
+.toggle{position:absolute;top:48px;right:10px;z-index:200;background:rgba(15,23,42,.85);border-radius:999px;padding:3px;display:none;box-shadow:0 4px 12px rgba(0,0,0,.18)}
+.toggle.show{display:flex}
+.toggle button{border:0;background:transparent;color:rgba(255,255,255,.65);padding:4px 11px;font-size:10px;border-radius:999px;font-weight:700}
+.toggle button.on{background:#fff;color:#1d4ed8}
+.bar{flex:0 0 auto;background:#fff;padding:10px 12px;display:flex;align-items:center;gap:8px;border-bottom:1px solid #e2e8f0;min-height:46px}
+.bar .t{font-weight:800;font-size:15px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ib{border:0;background:transparent;width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;color:#334155;flex:0 0 auto;font-size:20px;font-weight:900;line-height:1}
+.ib.blue{color:#1d4ed8}
+.ib:active{background:#f1f5f9}
+.sc{flex:1;overflow-y:auto;padding:12px 14px 18px}
+.sc::-webkit-scrollbar{width:0}
+.nav{flex:0 0 60px;background:#fff;border-top:1px solid #e2e8f0;display:flex}
+.nav button{flex:1;border:0;background:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:#64748b;font-size:10px}
+.nav svg{width:21px;height:21px}
+.nav button.on{color:#1d4ed8;font-weight:700}
+.pager{flex:0 0 48px;background:#fff;border-top:1px solid #e2e8f0;display:flex;flex-shrink:0}
+.pager button{flex:1;border:0;background:none;display:flex;align-items:center;justify-content:center;gap:6px;color:#1e293b;font-size:12px;font-weight:700}
+.pager svg{width:20px;height:20px}
+.pager button:disabled{color:#94a3b8}
+.pager button:active:not(:disabled){background:#f1f5f9}
+.card{background:#fff;border:1px solid #e2e8f0;border-radius:11px;padding:9px 10px;margin:7px 0}
+.card.click:active{background:#f8fafc}
+.h2{font-weight:800;font-size:13px;margin:12px 0 2px;display:flex;justify-content:space-between;align-items:center}
+.sm{font-size:10.5px;color:#64748b;line-height:1.55}
+.bt{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.bd{background:#e0e7ff;color:#3730a3;border-radius:999px;padding:2px 8px;font-size:9.5px;font-weight:700;white-space:nowrap}
+.bd.g{background:#dcfce7;color:#166534}.bd.o{background:#ffedd5;color:#9a3412}.bd.r{background:#fee2e2;color:#991b1b}.bd.k{background:#f1f5f9;color:#475569}
+.bd.l1{background:#fee2e2;color:#991b1b}.bd.l2{background:#ffedd5;color:#9a3412}.bd.l3{background:#dcfce7;color:#166534}
+.rl{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:9px 0;border-bottom:1px solid #f1f5f9}
+.rl:last-child{border-bottom:0}
+.rl .l{color:#334155}
+.rl .ch{width:15px;height:15px;color:#94a3b8;flex:0 0 auto}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
+.sb{background:#fff;border:1px solid #cbd5e1;border-radius:11px;padding:9px 10px;display:flex;align-items:center;gap:8px;color:#64748b}
+.sb input{border:0;outline:0;flex:1;font-size:12px;background:transparent;font-family:inherit;min-width:0;color:#0f172a}
+.sb svg{width:16px;height:16px;flex:0 0 16px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 4px}
+.chip{background:#e2e8f0;color:#334155;border:0;border-radius:999px;padding:4px 10px;font-size:10px;white-space:nowrap}
+.chip.on{background:#1d4ed8;color:#fff}
+.q{background:#fff;border:1px solid #e2e8f0;border-radius:11px;padding:10px 4px;display:flex;flex-direction:column;align-items:center;gap:5px;font-size:10.5px;color:#334155;width:100%}
+.q svg{width:20px;height:20px;color:#1d4ed8}
+.q b{font-weight:700}
+.notice{border-left:3px solid #1d4ed8}
+.notice.r{border-left-color:#dc2626}
+.notice.o{border-left-color:#ea580c}
+.tabs{display:flex;gap:5px;margin:4px 0 8px;overflow-x:auto;padding-bottom:2px}
+.tabs::-webkit-scrollbar{display:none}
+.tab{background:#f1f5f9;border:0;border-radius:8px;padding:6px 10px;font-size:10.5px;color:#475569;white-space:nowrap;font-weight:600}
+.tab.on{background:#1d4ed8;color:#fff}
+.tb{width:100%;border-collapse:collapse;font-size:10.5px;table-layout:fixed}
+.tb th,.tb td{border-bottom:1px solid #e2e8f0;padding:6px 4px;text-align:left;overflow:hidden;text-overflow:ellipsis}
+.tb th{color:#64748b;font-weight:700;background:#f8fafc}
+.sw{width:42px;height:23px;background:#cbd5e1;border-radius:999px;position:relative;border:0;flex:0 0 auto}
+.sw.on{background:#22c55e}
+.sw:after{content:"";position:absolute;left:2px;top:2px;width:19px;height:19px;background:#fff;border-radius:50%;transition:left .15s;box-shadow:0 1px 3px rgba(0,0,0,.25)}
+.sw.on:after{left:21px}
+.seg{display:flex;background:#f1f5f9;border-radius:10px;padding:3px;margin-bottom:12px}
+.seg button{flex:1;border:0;background:transparent;padding:8px;border-radius:8px;font-weight:700;color:#64748b;font-size:11px}
+.seg button.on{background:#fff;color:#1d4ed8;box-shadow:0 1px 4px rgba(15,23,42,.15)}
+.ta{width:100%;border:1px solid #cbd5e1;border-radius:10px;padding:9px;font-family:inherit;font-size:12px;color:#0f172a;background:#fff;outline:0;margin-top:4px}
+textarea.ta{min-height:66px;resize:none;line-height:1.5}
+.btn{background:#1d4ed8;color:#fff;border:0;border-radius:10px;padding:10px;width:100%;font-weight:700;font-size:12.5px;min-height:44px;margin-top:8px}
+.btn.g{background:#475569}.btn.r{background:#dc2626}.btn.o{background:#fff;color:#1d4ed8;border:1px solid #93c5fd}
+.btn.s{width:auto;padding:6px 12px;font-size:11px;min-height:0;margin-top:6px}
+.img{height:120px;background:linear-gradient(135deg,#dbeafe,#bfdbfe);border-radius:11px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#1e40af;gap:6px;margin:6px 0;border:0;width:100%}
+.img svg{width:30px;height:30px}
+.fl{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:8px}
+.fl .k{font-size:10px;color:#64748b}
+.fl .v{font-size:12.5px;font-weight:700;margin-top:2px}
+.hint{background:#fef3c7;border:1px dashed #fbbf24;color:#92400e;font-size:10px;padding:6px 9px;border-radius:8px;margin:6px 0;line-height:1.55}
+.hint b{color:#78350f}
+.tag{display:inline-block;background:#fef3c7;color:#92400e;border-radius:4px;padding:1px 5px;font-size:9px;font-weight:700;margin-left:4px;border:1px solid #fbbf24}
+.favb{border:0;background:transparent;padding:2px;line-height:1;display:flex;align-items:center;flex:0 0 auto}
+.favb svg{width:17px;height:17px;color:#cbd5e1}
+.favb.on svg{color:#f59e0b;fill:#f59e0b}
+.upzone{border:1.5px dashed #93c5fd;background:#eff6ff;border-radius:11px;padding:14px 10px;text-align:center;color:#1d4ed8;font-weight:700;width:100%}
+.upzone:active{background:#dbeafe}
+.upzone .sm{color:#3b82f6;font-weight:400;margin-top:3px}
+.wall-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.wall{height:84px;border-radius:11px;border:2px solid #e2e8f0;position:relative;overflow:hidden;background-size:cover;background-position:center;padding:0}
+.wall.on{border-color:#1d4ed8;box-shadow:0 0 0 2px rgba(29,78,216,.2)}
+.wall .tick{position:absolute;top:5px;right:6px;background:#1d4ed8;color:#fff;border-radius:999px;font-size:9px;padding:1px 6px;font-weight:700;display:none}
+.wall.on .tick{display:block}
+.wprev{height:150px;border-radius:12px;background-size:cover;background-position:center;border:1px solid #e2e8f0;margin:6px 0}
+body.formal .hint,body.formal .tag{display:none!important}
+.toast{position:absolute;left:50%;bottom:64px;transform:translateX(-50%) translateY(20px);background:rgba(15,23,42,.92);color:#fff;padding:9px 16px;border-radius:10px;font-size:11.5px;opacity:0;pointer-events:none;transition:all .2s;z-index:300;max-width:300px;text-align:center}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+.phone.has-nav .toast{bottom:124px}
+@media(max-width:920px){.wrap{flex-direction:column;align-items:center}.panel{position:static;width:100%;max-width:390px;order:2}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <aside class="panel">
+    <h1>产品 Wiki · 可点击原型</h1>
+    <p>仅 1 级超管登录后，右上角「原型 / 正式」开关才出现。已修复开关问题。</p>
+    <ul>
+      <li><b>首页顺序</b>：搜索 → 搜索记录 → 待办 → 会议记录 → 常用业务（4 项）→ … → 实用工具</li>
+      <li><b>常用业务</b>：异常工时（含申请人）、工艺改良、生产异常上报、产品规格书</li>
+      <li><b>收藏</b>：已迁入搜索模块，结果项点 ☆ 收藏；详情页 Tab 与客户备注可点</li>
+      <li><b>壁纸</b>：我的 → 个性化 → 壁纸设置，预设壁纸 / 自定义上传 / 预览后应用</li>
+      <li><b>基础常识</b>：1/2 级可上传图片或常见格式文件，也可手动录入标题+内容</li>
+      <li><b>公告</b>：只保留质量通报 / 工艺变更；1、2 级管理员可发布（制令单号 + 产品名称）</li>
+      <li><b>申请权限</b>：登录页次级菜单 → 手机号 + 姓名 + 岗位；1/2 级审批通过自动开通，默认密码 123</li>
+      <li><b>会议记录</b>：首页「每日会议记录表」跳金山文档，1/2 级可设置链接</li>
+      <li><b>实用工具</b>：工时计算器 / 单位换算可互动；基础常识 1/2 级可录入图片·标题·内容</li>
+      <li><b>生产首件</b>：进列表，右上角 + 提交；列表显示提交人；3 级可上传</li>
+      <li><b>超管</b>：Admin.li / Admin@123，忘密码走「超管应急找回」</li>
+    </ul>
+    <button class="demo" onclick="startExt()">演示：微信扫外部二维码</button>
+  </aside>
+  <div class="phone" id="phone">
+    <div class="status"><span>9:41</span><span>5G 100%</span></div>
+    <div class="toggle" id="tg">
+      <button data-m="proto" class="on">原型</button>
+      <button data-m="formal">正式</button>
+    </div>
+    <div id="app" style="flex:1;display:flex;flex-direction:column;overflow:hidden"></div>
+    <div class="toast" id="toast"></div>
+  </div>
+</div>
+<script>
+var SV={
+ back:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>',
+ fwd:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>',
+ ch:'<svg class="ch" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg>',
+ home:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 10.5L12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>',
+ search:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>',
+ sync:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 11a8 8 0 0 0-14-5.3L4 8"/><path d="M4 4v4h4"/><path d="M4 13a8 8 0 0 0 14 5.3l2-2.3"/><path d="M20 20v-4h-4"/></svg>',
+ user:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>',
+ clock:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+ bulb:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.5.4.5 1 .5 2.1h6c0-1.1 0-1.7.5-2.1A6 6 0 0 0 12 3z"/></svg>',
+ flask:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M9 3h6M10 3v6L5 19a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2l-5-10V3"/></svg>',
+ book:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 5a2 2 0 0 1 2-2h13v18H6a2 2 0 0 0-2 2z"/></svg>',
+ box:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M21 8l-9-5-9 5v8l9 5 9-5z"/><path d="M3 8l9 5 9-5M12 13v8"/></svg>',
+ scan:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7V5a1 1 0 0 1 1-1h2M17 4h2a1 1 0 0 1 1 1v2M20 17v2a1 1 0 0 1-1 1h-2M7 20H5a1 1 0 0 1-1-1v-2M4 12h16"/></svg>',
+ warn:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3l9 17H3z"/><path d="M12 10v5"/></svg>',
+ bom:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 6h13M8 12h13M8 18h13"/></svg>',
+ photo:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="M21 16l-5-4-8 7"/></svg>',
+ cam:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7h3l2-2h8l2 2h3v12H3z"/><circle cx="12" cy="13" r="4"/></svg>',
+ up:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 16V4M7 9l5-5 5 5M4 20h16"/></svg>',
+ flag:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4M5 4h11l-2 4 2 4H5"/></svg>',
+ doc:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg>',
+ star:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3l2.7 5.5 6 .9-4.3 4.2 1 6L12 16.8 6.6 19.6l1-6L3.3 9.4l6-.9z"/></svg>',
+ image:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 16l-5-4-9 7"/></svg>',
+ clip:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5L12.5 20a5 5 0 0 1-7-7l8-8a3.5 3.5 0 0 1 5 5l-8 8a2 2 0 0 1-3-3l7.5-7.5"/></svg>'
+};
+
+var PROD=[
+ {id:'XH-2401',n:'电源板',cl:['A厂','B厂'],v:'24V',sh:1,h:12.5,crc:'CRC16'},
+ {id:'XH-2401-B',n:'电源板带壳',cl:['B厂'],v:'24V',sh:1,h:13,crc:'CRC16'},
+ {id:'XH-2402',n:'电源模块',cl:['C厂'],v:'12V',sh:1,h:11,crc:'XOR'},
+ {id:'MK-12B',n:'控制盒',cl:['B厂'],v:'12V',sh:0,h:9.5,crc:'SUM8'}
+];
+
+var S={
+ stack:[{v:'login'}],fwd:[],auth:0,ext:0,id:'3',lv:3,mode:'proto',
+ parts:[
+  {k:'电池',r:'BT1',m:'CR2032',q:1,s:'ERP'},
+  {k:'IC',r:'U1',m:'LM2596',q:1,s:'ERP'},
+  {k:'IC',r:'U3',m:'STM32F103',q:1,s:'手动'},
+  {k:'传感器',r:'—',m:'',q:'?',s:'?'}
+ ],
+ users:[
+  {no:'PW-0001',n:'李建国',a:'Admin.li',lv:1,e:'长期',c:'不限',d:'iPhone+MFA',st:'正常'},
+  {no:'PW-0018',n:'李四',a:'Li.si',lv:2,e:'2026-12-31',c:'不限',d:'Android',st:'正常'},
+  {no:'PW-0102',n:'张三',a:'Zhang.san',lv:3,e:'2026-12-31',c:'28',d:'iPhone',st:'正常'},
+  {no:'PW-0077',n:'王五',a:'Wang.wu',lv:3,e:'已过期',c:'0',d:'—',st:'停用'}
+ ],
+ scanReqs:[
+  {id:'SQ-1005',n:'阿强',wx:'wxid_aqiang',ph:'138****2211',pos:'车间产线操作员',t:'10-05 09:55',why:'车间产线查询产品型号、BOM 和历史异常',st:'pending',src:'form'},
+  {id:'SQ-1004',n:'梅子',wx:'o7bT***',ph:'137****8830',pos:'外协包装',t:'10-04 16:02',why:'外协包装线看包装要求',st:'approved',lv:3,no:'PW-0103',src:'wechat'}
+ ],
+ chgReqs:[
+  {id:'XG-2031',who:'张三 PW-0102',t:'10-05 08:40',tg:'XH-2401 / BOM',ct:'端子 2P 替代料增加 J3-B',why:'J3 缺货，产线待料',st:'pending'},
+  {id:'XG-2029',who:'张三 PW-0102',t:'10-04 14:10',tg:'客户备注 / B厂',ct:'防潮袋改为双层',why:'客户邮件已确认',st:'approved'}
+ ],
+ pwdReqs:[{id:'PW-3001',who:'张三 PW-0102',t:'10-05 09:30',ac:'Zhang.san',why:'忘记原密码，申请重置',st:'pending'}],
+ know:[
+  {t:'焊接基本要求',c:'工艺',d:'焊点饱满、无虚焊、无连锡、无锡珠'},
+  {t:'防静电操作规范',c:'安全',d:'佩戴手环、防静电垫接地、禁徒手触摸 PCB'},
+  {t:'包装标识规则',c:'包装',d:'外箱标签朝上、批次号加粗、出口客户双标签'}
+ ],
+ samples:[
+  {id:'YP-2401',p:'XH-2401',n:'电源板',c:'A厂',q:5,st:'在库'},
+  {id:'YP-2402',p:'XH-2402',n:'电源模块',c:'C厂',q:0,st:'已领用'},
+  {id:'YP-1203',p:'MK-12B',n:'控制盒',c:'B厂',q:2,st:'在库'},
+  {id:'YP-2405',p:'XH-2401-B',n:'电源板带壳',c:'B厂',q:1,st:'已借出'}
+ ],
+ fa:[
+  {id:'FA-1005-01',ord:'MO-2026-1005-01',p:'XH-2401',n:'电源板',dt:'2026-10-05',sub:'张三 PW-0102',st:'SMT/L1',state:'待品质审核',ph:3},
+  {id:'FA-1004-03',ord:'MO-2026-1004-03',p:'MK-12B',n:'控制盒',dt:'2026-10-04',sub:'李四 PW-0018',st:'组装/P1',state:'已通过',ph:4},
+  {id:'FA-1004-01',ord:'MO-2026-1004-01',p:'XH-2402',n:'电源模块',dt:'2026-10-04',sub:'张三 PW-0102',st:'SMT/L1',state:'已驳回',ph:2}
+ ],
+ notices:[
+  {id:'TB-1005-01',tp:'质量通报',mo:'MO-2026-1005-01',p:'XH-2401 电源板',d:'批次 A2308 电容虚焊，现加严抽检',t:'2026-10-05 08:30',by:'李建国 PW-0001'},
+  {id:'TB-1004-02',tp:'工艺变更',mo:'MO-2026-1004-03',p:'MK-12B 控制盒',d:'测试工序增加耐压测试项',t:'2026-10-04 15:00',by:'李四 PW-0018'}
+ ],
+ meetUrl:'https://www.kdocs.cn/l/dailyMeeting',
+ favs:['XH-2402'],favTab:0,
+ abnRecs:[{who:'张三 PW-0102',type:'设备故障',mins:45,batch:'A2308 / 10-05 08:20',desc:'波峰焊机故障停线 45 分钟',t:'2026-10-05 09:05'}],
+ paRecs:[{who:'李四 PW-0018',p:'MK-12B 控制盒',type:'品质异常',desc:'首件测试耐压值偏低，已隔离批次 A2411',t:'2026-10-04 16:40'}],
+ paType:'品质异常',
+ wall:'',wallDraft:'',
+ msgTab:'todo',q:'XH-24',fShell:0,fV24:0,global:1,lastSync:'2026-10-05 09:20',
+ draft:{lv:3,exp:'1年',cnt:50},apTab:'scan',
+ skw:'',sf:'全部',abnType:'设备故障',nTp:'质量通报',
+ seq:{sq:1006,xg:2032,pw:104,pwd:3002,tb:1003},
+ wx:null
+};
+
+function cur(){return S.stack[S.stack.length-1];}
+function bar(t,r){return '<div class="bar"><button class="ib" data-a="back">'+SV.back+'</button><div class="t">'+t+'</div>'+(r||'')+'</div>';}
+function nav(a){
+ var x=[['home','首页',SV.home],['search','搜索',SV.search],['sync','同步',SV.sync],['profile','我的',SV.user]];
+ return '<div class="nav">'+x.map(function(i){return '<button class="'+(a===i[0]?'on':'')+'" data-r="'+i[0]+'">'+i[2]+'<span>'+i[1]+'</span></button>';}).join('')+'</div>';
+}
+function pager(){
+ var canBack=S.stack.length>1;
+ var canFwd=S.fwd&&S.fwd.length>0;
+ return '<div class="pager">'
+  +'<button '+(canBack?'':'disabled ')+'data-a="back">'+SV.back+'<span>后退</span></button>'
+  +'<button '+(canFwd?'':'disabled ')+'data-a="fwd">'+SV.fwd+'<span>前进</span></button>'
+  +'</div>';
+}
+
+/* ========== 登录 ========== */
+function loginV(){
+ return {b:''
+ +'<div style="padding:8px 4px">'
+ +'<div style="font-size:26px;font-weight:900;color:#1d4ed8;text-align:center;margin-top:26px">ERP Wiki</div>'
+ +'<div style="text-align:center;color:#64748b;margin:6px 0 20px">厂内产品知识库</div>'
+ +'<div class="sm" style="margin-bottom:4px">账号 / 手机号</div>'
+ +'<div class="card" style="margin:0 0 10px">'+(S.id==='1'?'Admin.li':S.id==='2'?'Li.si':'Zhang.san')+'</div>'
+ +'<div class="sm" style="margin-bottom:4px">密码</div>'
+ +'<div class="card" style="margin:0 0 10px">••••••••</div>'
+ +'<div class="chips"><span class="bd g">设备已绑定</span></div>'
+ +'<div class="sm" style="margin-bottom:4px">演示身份</div>'
+ +'<div class="seg">'
+ +'<button class="'+(S.id==='1'?'on':'')+'" data-a="id" data-x="1">1级超管</button>'
+ +'<button class="'+(S.id==='2'?'on':'')+'" data-a="id" data-x="2">2级管理</button>'
+ +'<button class="'+(S.id==='3'?'on':'')+'" data-a="id" data-x="3">3级浏览</button>'
+ +'</div>'
+ +'<button class="btn" data-a="login">登录</button>'
+ +'<div class="h2">申请加入</div><div class="card" style="padding:0 10px">'
+ +'<div class="rl" data-a="go-apply"><span class="l">📝 手机号 + 姓名 + 岗位 · 通过后默认密码 123</span>'+SV.ch+'</div></div>'
+ +'<button class="btn o" data-a="go-apply" style="margin-top:10px">申请权限</button>'
+ +'<div class="hint" style="margin-top:10px">原型说明：<b>仅 1 级超管登录后</b>，右上角出现「原型 / 正式」切换。初始账号 <b>Admin.li / Admin@123</b>。</div>'
+ +'<div style="text-align:center;margin-top:12px">'
+ +'<button class="chip" data-v="super-recover" style="background:#fef3c7;color:#92400e;border:1px solid #fbbf24">🔑 超管应急找回</button>'
+ +'</div></div>'};
+}
+function superRecoverV(){return {bar:bar('超管应急找回'),b:''
+ +'<div class="hint">超管密码丢失时的 3 条应急通道，任一条可用即可恢复。</div>'
+ +'<div class="h2">通道 1 · 一次性恢复码</div>'
+ +'<div class="card"><div class="sm">首次创建超管时系统生成 <b>10 个一次性恢复码</b>，打印封存。输入其中 1 个即可强制改密。</div>'
+ +'<input class="ta" placeholder="K7M2-9PQ4-XY1A">'
+ +'<button class="btn" data-a="toast" data-x="演示：恢复码通过，进入强制改密">验证恢复码</button></div>'
+ +'<div class="h2">通道 2 · 备用超管账号</div>'
+ +'<div class="card"><div class="sm">保留至少 2 个 1 级账号：日常 1 个，备用 1 个（凭据封存公司保险柜）。</div>'
+ +'<button class="btn g" data-a="toast" data-x="演示：切换为备用超管 Admin.bak 登录">用备用超管登录</button></div>'
+ +'<div class="h2">通道 3 · 服务器运维通道</div>'
+ +'<div class="card"><div class="sm">服务器上保留离线 CLI / SQL，需内网执行 + 写审计。</div>'
+ +'<div class="card sm" style="background:#0b1220;color:#cbd5e1;font-family:monospace;border-color:#1e293b">wiki-cli reset-super --user=Admin.li --confirm</div></div>'
+ +'<div class="card sm" style="border-color:#fca5a5">⚠ 三条通道任一条启用都要写审计 + 通知 IT 群。</div>'};}
+
+/* ========== 首页 ========== */
+function pCard(p,ck){
+ return '<div class="card '+(ck?'click':'')+'" '+(ck?'data-v="detail" data-id="'+p.id+'"':'')+'>'
+ +'<div class="bt"><b>'+p.id+' '+p.n+'</b><span class="bd">'+p.v+'</span></div>'
+ +'<div class="sm" style="margin-top:3px">客户：'+p.cl.join('、')+' / 外壳：'+(p.sh?'要':'不要')+'</div></div>';
+}
+function homeV(){return {nav:nav('home'),b:''
+ +'<div class="sb" data-r="search">'+SV.search+'<span style="flex:1">输入型号 / 中文名 / 场内编号</span></div>'
+ +'<div class="h2">搜索记录</div>'
+ +'<div class="chips"><button class="chip" data-a="hist" data-x="XH-2402">XH-2402</button><button class="chip" data-a="hist" data-x="MK-12B">MK-12B</button><button class="chip" data-a="hist" data-x="XH-2401-B">XH-2401-B</button></div>'
+ +'<div class="h2">待办事项</div>'
+ +'<button class="card click" style="width:100%;text-align:left" data-v="messages">'
+ +'<div class="bt"><span>🔔 你有 <b>3 条待办</b>、2 条通知</span><span class="bd r">3</span></div>'
+ +'<div class="sm" style="margin-top:4px">XG-2031 待审批 · SQ-1005 待审批 · PW-3001 改密待审批</div></button>'
+ +'<div class="h2"><span>每日会议记录</span>'+(S.lv<3?'<button class="chip" data-v="meet-edit">设置链接</button>':'')+'</div>'
+ +'<button class="card click" style="width:100%;text-align:left" data-a="meet-open">'
+ +'<div class="bt"><b>📒 每日会议记录表</b><span class="bd g">金山文档</span></div>'
+ +'<div class="sm" style="margin-top:4px">点击打开在线表格；链接由 1/2 级管理员在后台设置</div></button>'
+ +'<div class="h2">常用业务 <span class="tag">原型</span></div>'
+ +'<div class="g4">'
+ +'<button class="q" data-v="abn-hours">'+SV.clock+'<b>异常工时申请</b></button>'
+ +'<button class="q" data-v="proc-imp">'+SV.bulb+'<b>工艺改良申请</b></button>'
+ +'<button class="q" data-v="prod-abn">'+SV.flag+'<b>生产异常上报</b></button>'
+ +'<button class="q" data-v="spec-book">'+SV.doc+'<b>产品规格书</b></button></div>'
+ +'<div class="h2"><span>公告 / 质量通报</span>'+(S.lv<3?'<button class="chip" data-v="notice-form">发布 +</button>':'')+'</div>'
+ +S.notices.slice(0,2).map(function(n){return '<button class="card notice '+(n.tp==='质量通报'?'r':'o')+' click" style="width:100%;text-align:left" data-v="notice-list"><div class="bt"><b>'+n.tp+'</b><span class="bd '+(n.tp==='质量通报'?'r':'o')+'">'+n.t.slice(5)+'</span></div><div class="sm" style="margin-top:4px">'+n.p+'：'+n.d+'</div></button>';}).join('')
+ +'<div class="h2">生产首件 <span class="tag">原型</span></div>'
+ +'<button class="card click" style="width:100%;text-align:left" data-v="fa-list">'
+ +'<div class="bt"><b>📋 首件提交列表</b><span class="bd g">'+S.fa.length+' 条</span></div>'
+ +'<div class="sm" style="margin-top:4px">查看提交人 / 批次 / 状态；右上角 + 提交新首件（3 级可上传）</div></button>'
+ +'<div class="hint">生产首件入口进入后是<b>首件提交列表</b>，显示提交人；「提交首件」在列表页右上角次级按钮。</div>'
+ +'<div class="h2">快捷入口</div>'
+ +'<div class="g3">'
+ +'<button class="q" data-a="toast" data-x="演示：扫产品 / 物料二维码">'+SV.scan+'<b>扫码</b></button>'
+ +'<button class="q" data-v="detail" data-id="XH-2401" data-tab="anomaly">'+SV.warn+'<b>异常</b></button>'
+ +'<button class="q" data-v="detail" data-id="XH-2401" data-tab="bom">'+SV.bom+'<b>BOM</b></button></div>'
+ +'<div class="h2">实用工具 <span class="tag">原型</span></div>'
+ +'<div class="g4">'
+ +'<button class="q" data-v="know">'+SV.book+'<b>基础常识</b></button>'
+ +'<button class="q" data-v="calc-hours">'+SV.sync+'<b>工时计算</b></button>'
+ +'<button class="q" data-v="unit-conv">'+SV.box+'<b>单位换算</b></button>'
+ +'<button class="q" data-v="members">'+SV.user+'<b>使用成员</b></button></div>'};}
+
+/* ========== 搜索 ========== */
+function favBtn(id){
+ return '<button class="favb '+(S.favs.indexOf(id)>=0?'on':'')+'" data-a="fav-toggle" data-id="'+id+'" title="收藏">'+SV.star+'</button>';
+}
+function searchV(){return {nav:nav('search'),b:''
+ +'<div class="sb">'+SV.search+'<input id="qi" value="'+S.q+'" placeholder="型号 / 中文名 / 客户别名"></div>'
+ +'<div class="chips">'
+ +'<button class="chip '+(S.favTab?'':'on')+'" data-a="fav-tab" data-x="0">全部产品</button>'
+ +'<button class="chip '+(S.favTab?'on':'')+'" data-a="fav-tab" data-x="1">我的收藏 '+S.favs.length+'</button>'
+ +(S.favTab?'':'<button class="chip '+(S.fShell?'on':'')+'" data-f="shell">有外壳</button>'
+ +'<button class="chip '+(S.fV24?'on':'')+'" data-f="v24">24V</button>')+'</div>'
+ +'<div id="rl"></div>'};}
+function renderResults(){
+ var q=(S.q||'').trim().toLowerCase();
+ var L=PROD.filter(function(p){
+  if(S.favTab&&S.favs.indexOf(p.id)<0)return 0;
+  if(!S.favTab){
+   if(S.fShell&&!p.sh)return 0;
+   if(S.fV24&&p.v!=='24V')return 0;
+  }
+  if(!q)return 1;
+  return p.id.toLowerCase().indexOf(q)>=0||p.n.toLowerCase().indexOf(q)>=0||p.cl.join('').toLowerCase().indexOf(q)>=0;
+ });
+ var el=document.getElementById('rl');if(!el)return;
+ if(!L.length){el.innerHTML='<div class="card sm">'+(S.favTab?'还没有收藏产品，在搜索结果中点 ☆ 即可收藏。':'没有匹配的产品。')+'</div>';return;}
+ el.innerHTML=L.map(function(p){
+  var m=q&&p.id.toLowerCase().indexOf(q)===0;
+  return '<div class="card click" data-v="detail" data-id="'+p.id+'"><div class="bt"><b>'+p.id+'</b><span style="display:flex;align-items:center;gap:6px"><span class="bd '+(m?'g':'o')+'">'+(m?'匹配':'相似')+'</span>'+favBtn(p.id)+'</span></div>'
+  +'<div class="sm" style="margin-top:3px">'+p.n+' / '+p.cl.join('、')+' / '+p.v+'</div></div>';
+ }).join('');
+}
+
+/* ========== 详情 ========== */
+function partsSec(){
+ var ps=S.parts,bats=ps.filter(function(p){return p.k==='电池'&&p.m;}),ics=ps.filter(function(p){return p.k==='IC'&&p.m;});
+ var pend=ps.some(function(p){return !p.m;});
+ var sb=function(s){return s==='ERP'?'<span class="bd k">ERP</span>':s==='手动'?'<span class="bd">手动</span>':'<span class="bd o">待确认</span>';};
+ return '<div class="h2">BOM 关键件自动检索 <span class="bd '+(pend?'o':'g')+'">'+(pend?'有待确认':'已填充')+'</span></div>'
+ +'<table class="tb"><tr><th style="width:18%">关键件</th><th style="width:14%">位号</th><th style="width:34%">型号</th><th style="width:10%">数量</th><th style="width:24%">来源</th></tr>'
+ +ps.map(function(p,i){return '<tr><td>'+p.k+'</td><td>'+p.r+'</td><td>'+(p.m||'<button class="btn s" data-a="fill" data-i="'+i+'">补录</button>')+'</td><td>'+p.q+'</td><td>'+sb(p.s)+'</td></tr>';}).join('')+'</table>'
+ +'<div class="g2" style="margin-top:8px">'
+ +'<div class="fl"><div class="k">电池</div><div class="v">'+(bats.map(function(b){return b.m;}).join('、')||'待确认')+'</div></div>'
+ +'<div class="fl"><div class="k">电池数量</div><div class="v">'+bats.reduce(function(s,b){return s+b.q;},0)+' 节</div></div>'
+ +'<div class="fl"><div class="k">IC 数量</div><div class="v">'+ics.reduce(function(s,b){return s+b.q;},0)+' 颗</div></div>'
+ +'<div class="fl"><div class="k">IC 型号</div><div class="v" style="font-size:11px">'+(ics.map(function(b){return b.m;}).join('、')||'待确认')+'</div></div></div>';
+}
+var NOTES={
+ 'A厂':{tag:'g',lb:'默认',txt:'要外壳 / 标签朝上 / 校验码 CRC16；外箱 50 只装'},
+ 'B厂':{tag:'o',lb:'特殊',txt:'不要外壳 / 加防潮袋 / 外箱贴 B 厂标签；禁止替代料'},
+ 'C厂':{tag:'r',lb:'注意',txt:'指定端子 / 禁止替代料 / 校验码 XOR；出口双标签'}
+};
+function detailV(f){
+ var p=PROD.filter(function(x){return x.id===f.id;})[0]||PROD[0];
+ var tabs=[['overview','概览'],['anomaly','异常'],['bom','BOM'],['notes','客户备注']];
+ var b='<div class="bt" style="margin:2px 0 6px"><b style="font-size:14px">'+p.id+' '+p.n+'</b><span style="display:flex;align-items:center;gap:6px"><span class="bd g">在产</span>'+favBtn(p.id)+'</span></div>';
+ if(!f.tab||f.tab==='overview'){
+  b+='<div class="img">'+SV.photo+'<span class="sm" style="color:#1e40af">外观图片占位</span></div>'
+  +'<div class="g2">'
+  +'<div class="fl"><div class="k">工作电压</div><div class="v">'+p.v+'</div></div>'
+  +'<div class="fl" data-v="shell"><div class="k">要不要外壳</div><div class="v">'+(p.sh?'要':'不要')+'</div></div>'
+  +'<div class="fl" data-v="checksum"><div class="k">校验码</div><div class="v">'+p.crc+' / 3种</div></div>'
+  +'<div class="fl"><div class="k">标准工时</div><div class="v">'+p.h+' min</div></div></div>'
+  +partsSec()
+  +'<div class="card sm">场内型号：'+p.id+' / 中文名：'+p.n+' / 客户：'+p.cl.join('、')+'</div>'
+  +'<div class="card click sm bt" data-v="sync" data-push="1"><span>ERP 更新时间：'+S.lastSync+'</span>'+SV.ch+'</div>'
+  +(S.lv===3?'<button class="btn g" data-v="chg-req" data-push="1" data-tg="'+p.id+' 产品数据">需要修改？提交修改申请</button>':'');
+ } else if(f.tab==='anomaly'){
+  b+='<div class="h2">批量异常 <span class="bd r">3 条</span></div>'
+  +'<div class="card"><div class="bt"><b>2025-08-12 / A2308</b><span class="bd r">批量</span></div><div class="sm" style="margin-top:4px">电容虚焊 / 换料 + 加严抽检</div></div>'
+  +'<div class="card"><div class="bt"><b>2024-11-03 / A2411</b><span class="bd o">返工</span></div><div class="sm" style="margin-top:4px">外壳卡扣偏紧 / 修模</div></div>'
+  +'<div class="card"><div class="bt"><b>2024-06-18 / A2406</b><span class="bd">客诉</span></div><div class="sm" style="margin-top:4px">标签批次号错 / 加校验码扫描</div></div>';
+ } else if(f.tab==='bom'){
+  b+='<div class="h2">BOM 清单 <span class="bd">V1.3</span></div>'
+  +'<table class="tb"><tr><th style="width:14%">层级</th><th style="width:46%">物料</th><th style="width:16%">用量</th><th style="width:24%">替代</th></tr>'
+  +'<tr><td>1</td><td>PCB-2401</td><td>1</td><td>无</td></tr>'
+  +'<tr><td>2</td><td>电容 100uF</td><td>4</td><td>C2</td></tr>'
+  +'<tr><td>2</td><td>IC-7812</td><td>1</td><td>无</td></tr>'
+  +'<tr><td>2</td><td>端子 2P</td><td>2</td><td>J3</td></tr>'
+  +'<tr><td>2</td><td>外壳 A</td><td>1</td><td>无</td></tr></table>';
+ } else {
+  b+='<div class="hint">点击客户卡片可查看 / 复制完整备注要求。</div><div class="h2">客户备注要求</div>'
+  +Object.keys(NOTES).map(function(k){var n=NOTES[k];return '<button class="card click" style="width:100%;text-align:left" data-a="note-cust" data-x="'+k+'"><div class="bt"><b>'+k+'</b><span class="bd '+n.tag+'">'+n.lb+'</span></div><div class="sm" style="margin-top:4px">'+n.txt+'</div></button>';}).join('');
+ }
+ return {bar:bar(p.id+' '+p.n),b:'<div class="tabs">'+tabs.map(function(x){return '<button class="tab '+((f.tab||'overview')===x[0]?'on':'')+'" data-t="'+x[0]+'">'+x[1]+'</button>';}).join('')+'</div>'+b};
+}
+
+/* ========== 校验/外壳/同步 ========== */
+function checksumV(){return {bar:bar('历史校验码'),b:''
+ +'<div class="h2">曾经用过的校验码 <span class="bd">3 种</span></div>'
+ +'<div class="card"><div class="bt"><b>CRC16</b><span class="bd g">当前</span></div><div class="sm" style="margin-top:4px">A厂 / 0x8F2A</div></div>'
+ +'<div class="card"><div class="bt"><b>XOR</b><span class="bd o">旧</span></div><div class="sm" style="margin-top:4px">C厂 / 0x3C</div></div>'
+ +'<div class="card"><div class="bt"><b>SUM8</b><span class="bd k">停用</span></div><div class="sm" style="margin-top:4px">B厂 / 0xA1</div></div>'};}
+function shellV(){return {bar:bar('外壳与包装'),b:''
+ +'<div class="card"><div class="bt"><b>XH-2401 / A厂</b><span class="bd g">要外壳</span></div><div class="sm" style="margin-top:4px">A-2401 / 50 只/箱</div></div>'
+ +'<div class="card"><div class="bt"><b>XH-2401 / B厂</b><span class="bd o">不要外壳</span></div><div class="sm" style="margin-top:4px">防潮袋 + 气泡膜</div></div>'
+ +'<div class="card"><div class="bt"><b>XH-2402 / C厂</b><span class="bd g">要外壳</span></div><div class="sm" style="margin-top:4px">超声波焊接 / 禁止螺丝</div></div>'};}
+function syncV(root){return {bar:root?'':bar('数据同步'),nav:root?nav('sync'):'',b:''
+ +'<div class="h2">数据同步 <span class="bd g">ERP 在线</span></div>'
+ +'<div class="card sm">最近同步：'+S.lastSync+'</div>'
+ +'<div class="g2"><button class="btn" data-a="sync-now">立即同步</button><button class="btn g" data-a="up">手动上传</button></div>'
+ +'<div class="h2">上传记录</div>'
+ +'<div class="card sm">10-05 BOM_V1.3.xlsx / <span style="color:#9a3412;font-weight:700">待审核</span></div>'
+ +'<div class="card sm">10-04 客户备注_A厂.docx / <span style="color:#166534;font-weight:700">已生效</span></div>'
+ +'<div class="hint">原型说明：手动上传 Excel / Word 后，系统按 <b>文件名 + 表头关键字</b>自动分类（BOM / 客户备注 / 异常记录 / 样品台账），识别不到则归入「待归类」由管理员人工指派。</div>'};}
+
+/* ========== 首件 ========== */
+function faListV(){
+ return {bar:bar('生产首件 · 提交列表','<button class="ib blue" data-v="fa-form" title="提交首件">+</button>'),b:''
+ +'<div class="hint">这是<b>首件提交列表</b>，每条显示<b>提交人</b>；「提交首件」在<b>右上角 + 号</b>（次级按钮）。</div>'
+ +'<div class="chips"><button class="chip on">全部 '+S.fa.length+'</button><button class="chip">待品质审核</button><button class="chip">已通过</button><button class="chip">已驳回</button></div>'
+ +(S.lv===3?'<div class="sm" style="margin:4px 0 6px">当前 3 级：可查看列表、可提交新首件（上传），其它数据仍只读。</div>':'')
+ +S.fa.map(function(f){return '<div class="card">'
+  +'<div class="bt"><b>'+f.id+'</b><span class="bd '+(f.state==='已通过'?'g':f.state==='已驳回'?'r':'o')+'">'+f.state+'</span></div>'
+  +'<div class="sm" style="margin-top:4px">指令单：'+f.ord+'<br>产品：'+f.p+' '+f.n+' / 投产：'+f.dt+'<br>工站：'+f.st+' / 照片：'+f.ph+' 张<br><b>提交人：'+f.sub+'</b></div></div>';}).join('')
+ +'<button class="btn" data-v="fa-form">+ 提交首件</button>'};}
+function faFormV(){return {bar:bar('提交首件'),b:''
+ +'<div class="hint">产线做首件时填写 <b>指令单编号 + 商品名称 + 投产日期</b>，上传照片，提交后进入品质审核。3 级可上传。</div>'
+ +'<div class="card">'
+ +'<div class="sm">指令单编号 <span class="bd r">必填</span></div><input class="ta" id="fo" value="MO-2026-1005-02">'
+ +'<div class="sm" style="margin-top:8px">商品名称 <span class="bd r">必填</span></div><input class="ta" id="fn" value="XH-2401 电源板">'
+ +'<div class="sm" style="margin-top:8px">投产日期 <span class="bd r">必填</span></div><input class="ta" id="fd" type="date" value="2026-10-05"></div>'
+ +'<div class="h2">首件照片 <span class="bd o">最多 6 张</span></div>'
+ +'<button class="img" data-a="toast" data-x="演示：调用相机 / 相册">'+SV.cam+'<span class="sm" style="color:#1e40af">点击上传首件照片</span></button>'
+ +'<div class="g3"><div class="img" style="height:66px;margin:0">'+SV.photo+'</div><div class="img" style="height:66px;margin:0">'+SV.photo+'</div><div class="img" style="height:66px;margin:0;background:#f1f5f9;color:#94a3b8">+</div></div>'
+ +'<div class="card"><div class="rl"><span class="l">提交人</span><b>'+(S.lv===3?'张三 PW-0102':S.lv===2?'李四 PW-0018':'李建国 PW-0001')+'</b></div><div class="rl"><span class="l">工站</span><b>SMT / L1</b></div></div>'
+ +'<button class="btn" data-a="submit-fa">提交首件</button>'};}
+
+/* ========== 异常工时/工艺/样品 ========== */
+function abnV(){return {bar:bar('异常工时申请'),b:''
+ +'<div class="hint">产线异常停线时提交，记录申请人与异常工时。</div>'
+ +'<div class="card">'
+ +'<div class="sm">申请人</div><input class="ta" id="awho" value="'+(S.lv===1?'李建国 PW-0001':S.lv===2?'李四 PW-0018':'张三 PW-0102')+'">'
+ +'<div class="sm" style="margin-top:8px">产品型号</div><input class="ta" id="aprod" value="XH-2401 电源板">'
+ +'<div class="sm" style="margin-top:8px">异常类型</div>'
+ +'<div class="seg" style="margin-top:4px">'+['设备故障','来料异常','工艺异常'].map(function(x){return '<button class="'+(S.abnType===x?'on':'')+'" data-a="abn-type" data-x="'+x+'">'+x+'</button>';}).join('')+'</div>'
+ +'<div class="sm">异常工时（min）</div><input class="ta" id="amin" value="45">'
+ +'<div class="sm" style="margin-top:8px">发生批次 / 时间</div><input class="ta" id="abatch" value="A2308 / 2026-10-05 08:20">'
+ +'<div class="sm" style="margin-top:8px">异常说明</div><textarea class="ta" id="adesc">波峰焊机故障停线 45 分钟</textarea></div>'
+ +'<button class="btn" data-a="submit-abn">提交申请</button>'
+ +'<div class="h2">申请记录 <span class="bd">'+S.abnRecs.length+' 条</span></div>'
+ +S.abnRecs.map(function(r){return '<div class="card"><div class="bt"><b>'+r.who+'</b><span class="bd o">'+r.type+' · '+r.mins+'min</span></div><div class="sm" style="margin-top:4px">'+r.batch+'<br>'+r.desc+'<br>提交：'+r.t+'</div></div>';}).join('')};}
+function prodAbnV(){
+ var ts=['品质异常','设备异常','物料异常','工艺异常','安全异常'];
+ return {bar:bar('生产异常上报'),b:''
+ +'<div class="hint">产线发现异常随时上报，质量/工艺 1、2 级管理员实时收到。</div>'
+ +'<div class="card">'
+ +'<div class="sm">申请人</div><input class="ta" id="pawho" value="'+(S.lv===1?'李建国 PW-0001':S.lv===2?'李四 PW-0018':'张三 PW-0102')+'">'
+ +'<div class="sm" style="margin-top:8px">产品 / 批次</div><input class="ta" id="pap" value="XH-2401 电源板 / A2308">'
+ +'<div class="sm" style="margin-top:8px">异常类型</div>'
+ +'<div class="seg" style="margin-top:4px">'+ts.map(function(x){return '<button class="'+(S.paType===x?'on':'')+'" data-a="pa-type" data-x="'+x+'">'+x.replace('异常','')+'</button>';}).join('')+'</div>'
+ +'<div class="sm">异常描述</div><textarea class="ta" id="padesc">批次 A2308 发现 2 片电容虚焊，已临时隔离</textarea>'
+ +'<div class="sm" style="margin-top:8px">现场图片（选填）</div><button class="upzone" data-a="toast" data-x="演示：调起相机 / 相册（JPG、PNG）">'+SV.cam+'<div>拍照 / 上传现场图</div><div class="sm">支持 JPG / PNG，单张不超过 10MB</div></button></div>'
+ +'<button class="btn" data-a="submit-pa">立即上报</button>'
+ +'<div class="h2">上报记录 <span class="bd">'+S.paRecs.length+' 条</span></div>'
+ +S.paRecs.map(function(r){return '<div class="card notice r"><div class="bt"><b>'+r.p+'</b><span class="bd r">'+r.type+'</span></div><div class="sm" style="margin-top:4px">'+r.desc+'<br>上报人：'+r.who+' / '+r.t+'</div></div>';}).join('')};}
+var SPECS=[
+ {p:'XH-2401 电源板',ver:'V2.1',dt:'2026-09-28',files:['XH-2401_产品规格书_V2.1.pdf','XH-2401_外形尺寸图_V2.1.dwg','XH-2401_检验规范_V2.1.pdf']},
+ {p:'XH-2401-B 电源板带壳',ver:'V1.6',dt:'2026-09-15',files:['XH-2401-B_产品规格书_V1.6.pdf','XH-2401-B_包装规范_V1.6.docx']},
+ {p:'XH-2402 电源模块',ver:'V3.0',dt:'2026-10-02',files:['XH-2402_产品规格书_V3.0.pdf']},
+ {p:'MK-12B 控制盒',ver:'V1.2',dt:'2026-08-20',files:['MK-12B_产品规格书_V1.2.pdf','MK-12B_接线定义_V1.2.xlsx']}
+];
+function specBookV(){return {bar:bar('产品规格书'),b:''
+ +'<div class="hint">按产品查看最新规格书 / 尺寸图 / 检验规范，点击文件在线预览。</div>'
+ +SPECS.map(function(s){return '<div class="card"><div class="bt"><b>'+SV.doc+' '+s.p+'</b><span class="bd g">'+s.ver+'</span></div>'
+  +'<div class="sm" style="margin-top:4px">更新：'+s.dt+'</div>'
+  +s.files.map(function(fn){return '<button class="rl click" style="width:100%;text-align:left;border:0;background:none;border-bottom:1px solid #f1f5f9" data-a="open-doc" data-x="'+fn+'"><span class="l">📄 '+fn+'</span>'+SV.ch+'</button>';}).join('')+'</div>';}).join('')};}
+function procV(){return {bar:bar('工艺改良申请'),b:''
+ +'<div class="hint">产线 / 工艺提出改良方案，提交后由工艺和 2 级管理员评审。</div>'
+ +'<div class="card">'
+ +'<div class="sm">申请人</div><input class="ta" value="'+(S.lv===1?'李建国 PW-0001':S.lv===2?'李四 PW-0018':'张三 PW-0102')+'">'
+ +'<div class="sm" style="margin-top:8px">产品型号</div><input class="ta" value="XH-2401 电源板">'
+ +'<div class="sm" style="margin-top:8px">涉及工序</div><input class="ta" value="波峰焊 → 测试">'
+ +'<div class="sm" style="margin-top:8px">现状问题</div><textarea class="ta">波峰焊后连锡比例偏高</textarea>'
+ +'<div class="sm" style="margin-top:8px">改良内容</div><textarea class="ta">调整助焊剂喷涂量 + 预热 10s</textarea>'
+ +'<div class="sm" style="margin-top:8px">预期收益</div><input class="ta" value="连锡不良率下降 30%"></div>'
+ +'<button class="btn" data-a="submit" data-x="工艺改良申请">提交申请</button>'};}
+function sampleV(){return {bar:bar('样品查询','<button class="ib blue" data-v="sample-add" title="添加样品">+</button>'),b:''
+ +'<div class="hint">输入样品编号 / 型号 / 名称 / 客户查库存与状态。右上角 <b>+ 号</b>可添加样品。</div>'
+ +'<div class="sb">'+SV.search+'<input id="skw" value="'+S.skw+'" placeholder="样品编号 / 型号 / 客户"></div>'
+ +'<div class="chips" style="margin-top:8px">'+['全部','在库','已领用','已借出'].map(function(x){return '<button class="chip '+(S.sf===x?'on':'')+'" data-a="sf" data-x="'+x+'">'+x+'</button>';}).join('')+'</div>'
+ +'<div class="h2">样品列表 <span class="bd" id="scnt">'+S.samples.length+' 条</span></div>'
+ +'<div id="srl"></div>'
+ +'<button class="btn o" data-v="sample-add">+ 添加样品</button>'};}
+function renderSamples(){
+ var kw=(S.skw||'').trim().toLowerCase();
+ var L=S.samples.filter(function(s){
+  if(S.sf!=='全部'&&s.st!==S.sf)return 0;
+  if(!kw)return 1;
+  return (s.id+s.p+s.n+s.c).toLowerCase().indexOf(kw)>=0;
+ });
+ var el=document.getElementById('srl');if(!el)return;
+ var cn=document.getElementById('scnt');if(cn)cn.textContent=L.length+' 条';
+ el.innerHTML=L.length?L.map(function(s){return '<div class="card"><div class="bt"><b>'+s.id+'</b><span class="bd '+(s.st==='在库'?'g':s.st==='已领用'?'o':'r')+'">'+s.st+'</span></div><div class="sm" style="margin-top:4px">'+s.p+' '+s.n+' / '+s.c+' / 数量：'+s.q+'</div></div>';}).join(''):'<div class="card sm">没有匹配的样品。</div>';
+}
+function sampleAddV(){return {bar:bar('添加样品'),b:''
+ +'<div class="hint">登记样品编号 / 型号 / 客户 / 数量 / 状态，写样品台账。</div>'
+ +'<div class="card">'
+ +'<div class="sm">样品编号 <span class="bd r">必填</span></div><input class="ta" id="si" value="YP-2406">'
+ +'<div class="sm" style="margin-top:8px">型号 <span class="bd r">必填</span></div><input class="ta" id="sp" value="XH-2401">'
+ +'<div class="sm" style="margin-top:8px">名称</div><input class="ta" id="sn" value="电源板">'
+ +'<div class="sm" style="margin-top:8px">客户</div><input class="ta" id="sc" value="A厂">'
+ +'<div class="sm" style="margin-top:8px">数量</div><input class="ta" id="sq" value="3">'
+ +'<div class="sm" style="margin-top:8px">状态</div>'
+ +'<div class="seg" style="margin-top:4px"><button class="on">在库</button><button>已领用</button><button>已借出</button></div></div>'
+ +'<button class="btn" data-a="submit-sample">保存样品</button>'};}
+
+/* ========== 基础常识 ========== */
+function knowV(){
+ var can=S.lv===1||S.lv===2;
+ return {bar:bar('基础常识',can?'<button class="ib blue" data-v="know-form" title="手动录入">+</button>':''),b:''
+ +(can?'<button class="upzone" data-a="pick-file">'+SV.up+'<div>上传图片 / 文件</div><div class="sm">JPG · PNG · GIF · PDF · Word · Excel · PPT · TXT，单文件 ≤ 20MB</div></button>'
+  +'<input type="file" id="kfile" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt" style="display:none">'
+  +'<button class="btn o" data-v="know-form">手动输入：标题 + 内容 + 图片链接</button>':'')
+ +'<div class="h2">常识卡片 <span class="bd">'+S.know.length+' 条</span></div>'
+ +S.know.map(function(k){return '<div class="card">'+(k.img?'<img src="'+k.img+'" style="width:100%;height:80px;object-fit:cover;border-radius:8px;margin:0 0 8px;display:block">':'')
+  +(k.file?'<button class="img" style="border:0" data-a="open-doc" data-x="'+k.t+'">'+SV.doc+'<span class="sm" style="color:#1e40af">'+k.t+'</span></button>':(!k.img?'<div class="img" style="height:80px;margin:0 0 8px">'+SV.photo+'<span class="sm" style="color:#1e40af">'+k.t+' · 图片</span></div>':''))
+  +'<div class="bt"><b>'+k.t+'</b><span class="bd">'+k.c+'</span></div><div class="sm" style="margin-top:4px">'+k.d+'</div></div>';}).join('')};}
+function knowFormV(){return {bar:bar('添加常识'),b:''
+ +'<div class="hint">手动输入图片 / 标题 / 内容，保存后进入常识卡片。</div>'
+ +'<div class="card">'
+ +'<div class="sm">标题 <span class="bd r">必填</span></div><input class="ta" id="kt" placeholder="如：焊接基本要求">'
+ +'<div class="sm" style="margin-top:8px">图片链接 <span class="bd k">选填</span></div><input class="ta" id="kp" placeholder="https://…（图片地址）">'
+ +'<div class="sm" style="margin-top:8px">内容 <span class="bd r">必填</span></div><textarea class="ta" id="kd2" placeholder="常识内容说明"></textarea></div>'
+ +'<button class="btn" data-a="submit-know">保存常识</button>'
+ +'<button class="btn o" data-a="back">取消</button>'};}
+
+/* ========== 扫码/申请 ========== */
+function scanV(){return {bar:bar('微信扫码'),b:''
+ +'<div class="card" style="text-align:center;padding:60px 12px;background:#0b1220;color:#cbd5e1;border:0">'
+ +'<div style="font-size:44px;margin-bottom:12px">📷</div><b style="color:#fff">对准二维码</b>'
+ +'<div class="sm" style="color:#94a3b8;margin-top:6px">扫描「权限申请二维码」</div></div>'
+ +'<button class="btn" data-a="scan-done" style="background:#07c160">模拟扫码完成</button>'
+ +'<button class="btn o" data-a="back">取消</button>'};}
+function wxAuthV(){
+ var w=S.wx||{n:'阿强',wx:'wxid_aqiang'};
+ return {bar:bar('微信授权'),b:''
+ +'<div class="card" style="text-align:center;padding:18px 12px">'
+ +'<div style="width:64px;height:64px;border-radius:50%;background:#07c160;color:#fff;font-size:30px;display:flex;align-items:center;justify-content:center;margin:0 auto 10px">🧑</div>'
+ +'<b style="font-size:14px">'+w.n+'</b><div class="sm" style="margin-top:4px">OpenID：'+w.wx+'</div></div>'
+ +'<button class="btn" data-a="wx-ok" style="background:#07c160">同意授权并填写申请</button>'
+ +'<button class="btn o" data-a="back">拒绝</button>'};}
+function applyFormV(title,action){return {bar:bar(title),b:''
+ +'<div class="hint">手机号将作为登录账号；管理员通过后自动开通，<b>默认密码 123</b>。</div>'
+ +'<div class="card">'
+ +'<div class="sm">微信号 <span class="bd r">必填</span></div><input class="ta" id="aw" value="wxid_aqiang">'
+ +'<div class="sm" style="margin-top:8px">手机号（登录账号）<span class="bd r">必填</span></div><input class="ta" id="ap" value="138****2211">'
+ +'<div class="sm" style="margin-top:8px">姓名 <span class="bd r">必填</span></div><input class="ta" id="an" value="阿强">'
+ +'<div class="sm" style="margin-top:8px">岗位 <span class="bd r">必填</span></div><input class="ta" id="ao" value="车间产线操作员">'
+ +'<div class="sm" style="margin-top:8px">主要用途 / 理由</div><textarea class="ta" id="ar">车间产线查询产品型号、BOM 和历史异常</textarea></div>'
+ +'<div class="card sm">提交后由 <b>1/2 级管理员</b>审批；通过后自动生成账号（手机号），默认密码 123。</div>'
+ +'<button class="btn" data-a="'+action+'">提交申请</button>'};}
+function touristApplyV(){return {bar:bar('申请权限'),b:''
+ +'<div class="hint">填写 <b>手机号 + 姓名 + 岗位</b> 即可申请；<b>手机号即登录账号</b>，1/2 级管理员审批通过后自动开通权限，<b>默认密码 123</b>。</div>'
+ +'<div class="card">'
+ +'<div class="sm">手机号（登录账号）<span class="bd r">必填</span></div><input class="ta" id="ap" inputmode="numeric" maxlength="11" value="13800002211" placeholder="11 位手机号">'
+ +'<div class="sm" style="margin-top:8px">姓名 <span class="bd r">必填</span></div><input class="ta" id="an" value="阿强" placeholder="真实姓名">'
+ +'<div class="sm" style="margin-top:8px">岗位 <span class="bd r">必填</span></div><input class="ta" id="ao" value="车间产线操作员" placeholder="如：车间产线操作员 / 外协包装"></div>'
+ +'<div class="card sm">提交后出现在 <b>审批中心 · 权限</b>，由 1/2 级管理员审批；通过后自动生成账号，无需再次注册。</div>'
+ +'<button class="btn" data-a="submit-tourist">提交申请</button>'
+ +'<button class="btn o" data-a="back">返回登录页</button>'};}
+function doneV(f){
+ var scan=f.kind==='scan',pwd=f.kind==='pwd';
+ return {bar:bar(scan?'申请已提交':pwd?'改密申请已提交':'修改申请已提交'),b:''
+ +'<div style="text-align:center;padding:26px 10px 18px">'
+ +'<div style="width:66px;height:66px;border-radius:50%;background:#dcfce7;color:#16a34a;font-size:34px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px">✓</div>'
+ +'<b style="font-size:15px">'+(scan?'权限申请已提交，待管理员审批':pwd?'修改密码申请已提交':'修改申请已提交，待上级审批')+'</b>'
+ +'<div class="sm" style="margin-top:8px;line-height:1.7">单号：'+f.no+'<br>'+(scan?'通过后下发账号（手机号），默认密码 123':pwd?'仅 1 级超管可审批':'通过后修改自动生效')+'</div></div>'
+ +'<button class="btn" data-a="done-close">'+((f.from==='tourist'||(S.wx&&S.wx.from==='login'))?'返回登录页':'返回首页')+'</button>'};}
+function pwdApplyV(){return {bar:bar('申请修改密码'),b:''
+ +'<div class="hint">非 1 级用户改密走申请，<b>只有 1 级超管可审批</b>。</div>'
+ +'<div class="card">'
+ +'<div class="sm">账号</div><input class="ta" value="'+(S.lv===3?'Zhang.san':'Li.si')+'">'
+ +'<div class="sm" style="margin-top:8px">新密码</div><input class="ta" type="password" value="········">'
+ +'<div class="sm" style="margin-top:8px">确认新密码</div><input class="ta" type="password" value="········">'
+ +'<div class="sm" style="margin-top:8px">申请原因</div><textarea class="ta">忘记原密码，申请重置</textarea></div>'
+ +'<button class="btn" data-a="submit-pwd">提交申请</button>'};}
+function pwdSelfV(){return {bar:bar('修改密码（自助）'),b:''
+ +'<div class="hint">1 级超管改自己的密码<b>不需要审批</b>。</div>'
+ +'<div class="card">'
+ +'<div class="sm">原密码</div><input class="ta" type="password" value="········">'
+ +'<div class="sm" style="margin-top:8px">新密码</div><input class="ta" type="password" placeholder="建议 8 位以上 + 大小写 + 数字">'
+ +'<div class="sm" style="margin-top:8px">确认新密码</div><input class="ta" type="password">'
+ +'<div class="sm" style="margin-top:8px">短信验证码</div>'
+ +'<div class="g2" style="margin-top:4px"><input class="ta" style="margin:0" placeholder="6 位"><button class="btn g" data-a="toast" data-x="演示：验证码已发送">获取验证码</button></div></div>'
+ +'<button class="btn" data-a="submit-self">确认修改</button>'};}
+
+/* ========== 权限/控制台/审计 ========== */
+function usersV(){
+ var list=S.lv===2?S.users.filter(function(u){return u.lv===3;}):S.users;
+ return {bar:bar(S.lv===2?'3 级账号管理':'权限号管理'),b:''
+ +'<div class="hint">1 级管理全部等级；2 级仅管理 3 级账号。</div>'
+ +list.map(function(u){return '<div class="card">'
+  +'<div class="bt"><b>'+u.n+'</b><span class="bd l'+u.lv+'">'+u.lv+' 级</span></div>'
+  +'<div class="sm" style="margin-top:4px">权限号：'+u.no+' / 账号：'+u.a+'<br>有效期：'+u.e+' / 次数：'+u.c+' / 设备：'+u.d+'<br>状态：'+(u.st==='正常'?'<span style="color:#166534;font-weight:700">正常</span>':'<span style="color:#991b1b;font-weight:700">停用</span>')+'</div>'
+  +(u.st==='正常'?'<button class="btn s" data-a="toast" data-x="演示：改次数 / 有效期 / 停用">改次数 / 有效期 / 停用</button>':'')
+  +'</div>';}).join('')};}
+function consoleV(){return {bar:bar('外网最高控制台'),b:''
+ +'<div class="card"><div class="bt"><span>全局访问开关</span><button class="sw '+(S.global?'on':'')+'" data-a="tgl"></button></div></div>'
+ +'<div class="card"><div class="bt"><span>强制所有人重新登录</span><button class="btn s" data-a="toast" data-x="演示：已下发">执行</button></div></div>'
+ +'<div class="card"><div class="bt"><span>远程停用设备</span><button class="btn s r" data-a="toast" data-x="演示：二次确认后停用">停用</button></div></div>'
+ +'<div class="card sm">所有操作写审计日志，需 MFA + 二次确认。</div>'};}
+function auditV(){return {bar:bar('审计日志'),b:['09:22 张三 查询 XH-2401','09:18 管理员 修改李四 次数 10→5','09:10 李四 导出 BOM / 已水印','08:55 系统 同步 ERP 成功','08:40 王五 登录失败 / 已停用'].map(function(t){return '<div class="card sm">'+t+'</div>';}).join('')};}
+
+/* ========== 审批 ========== */
+function stB(s){return s==='pending'?'<span class="bd o">待审批</span>':s==='approved'?'<span class="bd g">已通过</span>':'<span class="bd r">已驳回</span>';}
+function apprV(){
+ var t=S.apTab,ps=S.scanReqs.filter(function(a){return a.st==='pending';}).length,pc=S.chgReqs.filter(function(a){return a.st==='pending';}).length,pp=S.pwdReqs.filter(function(a){return a.st==='pending';}).length;
+ var showPwd=S.lv===1;
+ var b='<div class="hint"><b>修改密码申请只对 1 级超管可见</b>。</div>'
+ +'<div class="seg">'
+ +'<button class="'+(t==='scan'?'on':'')+'" data-a="apt" data-x="scan">权限'+(ps?' · '+ps:'')+'</button>'
+ +'<button class="'+(t==='chg'?'on':'')+'" data-a="apt" data-x="chg">修改'+(pc?' · '+pc:'')+'</button>'
+ +(showPwd?'<button class="'+(t==='pwd'?'on':'')+'" data-a="apt" data-x="pwd">改密'+(pp?' · '+pp:'')+'</button>':'')
+ +'</div>';
+ if(t==='scan'){
+  b+=S.scanReqs.map(function(a){return '<div class="card"><div class="bt"><b>'+a.n+'</b>'+stB(a.st)+'</div>'
+   +'<div class="sm" style="margin-top:4px">'+a.t+' / '+(a.src==='wechat'?'微信':a.src==='tourist'?'登录页申请':'登录页')+'<br>手机：'+(a.ph||'—')+' / 岗位：'+(a.pos||'—')+'</div>'
+   +(a.st==='pending'?'<button class="btn s" data-a="open-rev" data-k="scan" data-id="'+a.id+'">去审批</button>':'')
+   +'</div>';}).join('');
+ } else if(t==='chg'){
+  b+=S.chgReqs.map(function(a){return '<div class="card"><div class="bt"><b>'+a.tg+'</b>'+stB(a.st)+'</div>'
+   +'<div class="sm" style="margin-top:4px">'+a.t+' / '+a.who+'<br>内容：'+a.ct+'</div>'
+   +(a.st==='pending'?'<button class="btn s" data-a="open-rev" data-k="chg" data-id="'+a.id+'">去审批</button>':'')+'</div>';}).join('');
+ } else {
+  b+=S.pwdReqs.map(function(a){return '<div class="card"><div class="bt"><b>'+a.ac+' 改密</b>'+stB(a.st)+'</div>'
+   +'<div class="sm" style="margin-top:4px">'+a.t+' / '+a.who+'<br>原因：'+a.why+'</div>'
+   +(a.st==='pending'?'<button class="btn s" data-a="open-rev" data-k="pwd" data-id="'+a.id+'">去审批</button>':'')+'</div>';}).join('');
+ }
+ return {bar:bar('审批中心'),b:b};
+}
+function revScanV(f){
+ var a=S.scanReqs.filter(function(x){return x.id===f.id;})[0],d=S.draft;
+ var lv=function(n,t){
+  if(S.lv===2&&n!==3)return '<button disabled style="opacity:.4">'+t+'</button>';
+  return '<button class="'+(d.lv===n?'on':'')+'" data-a="pick" data-k="lv" data-x="'+n+'">'+t+'</button>';
+ };
+ return {bar:bar('审批 · 权限申请'),b:''
+ +'<div class="card"><div class="bt"><b>'+a.n+'</b><span class="sm">'+a.t+'</span></div>'
+ +'<div class="sm" style="margin-top:4px">'+(a.src==='tourist'?'申请来源：<b>登录页 · 申请加入</b>':'微信号：'+a.wx)+'<br>手机（登录账号）：<b>'+a.ph+'</b><br>姓名：'+a.n+'<br>岗位：'+(a.pos||'—')+'<br>理由：'+a.why+'</div></div>'
+ +'<div class="sm">授予权限等级</div>'
+ +'<div class="seg" style="margin-top:4px">'+lv(1,'1级 超管')+lv(2,'2级 管理')+lv(3,'3级 浏览')+'</div>'
+ +'<div class="sm">有效期</div>'
+ +'<div class="seg" style="margin-top:4px">'+['3个月','半年','1年'].map(function(x){return '<button class="'+(d.exp===x?'on':'')+'" data-a="pick" data-k="exp" data-x="'+x+'">'+x+'</button>';}).join('')+'</div>'
+ +(d.lv===3?'<div class="sm">可用次数</div><div class="seg" style="margin-top:4px">'+[20,50,100].map(function(x){return '<button class="'+(d.cnt===x?'on':'')+'" data-a="pick" data-k="cnt" data-x="'+x+'">'+x+'次</button>';}).join('')+'</div>':'')
+ +'<div class="card sm">通过后自动生成账号：<b>'+a.ph+'</b>，默认密码 <b>123</b>。</div>'
+ +'<div class="sm">驳回原因（驳回时填写）</div><input class="ta" id="rj" placeholder="如：非本厂人员">'
+ +'<button class="btn" data-a="approve-scan" data-id="'+a.id+'">通过并生成账号</button>'
+ +'<button class="btn r" data-a="reject-scan" data-id="'+a.id+'">驳回</button>'};}
+function revChgV(f){
+ var a=S.chgReqs.filter(function(x){return x.id===f.id;})[0];
+ return {bar:bar('审批 · 修改申请'),b:''
+ +'<div class="card"><div class="bt"><b>'+a.tg+'</b><span class="sm">'+a.t+'</span></div>'
+ +'<div class="sm" style="margin-top:4px">申请人：'+a.who+'<br>内容：'+a.ct+'<br>原因：'+a.why+'</div></div>'
+ +'<div class="sm">驳回原因</div><input class="ta" id="rj" placeholder="如：请补充客户确认邮件">'
+ +'<button class="btn" data-a="approve-chg" data-id="'+a.id+'">通过，修改生效</button>'
+ +'<button class="btn r" data-a="reject-chg" data-id="'+a.id+'">驳回</button>'};}
+function revPwdV(f){
+ var a=S.pwdReqs.filter(function(x){return x.id===f.id;})[0];
+ return {bar:bar('审批 · 修改密码'),b:''
+ +'<div class="hint">仅 1 级超管可进，通过后密码立即重置。</div>'
+ +'<div class="card"><div class="bt"><b>'+a.ac+'</b><span class="sm">'+a.t+'</span></div>'
+ +'<div class="sm" style="margin-top:4px">申请人：'+a.who+'<br>原因：'+a.why+'</div></div>'
+ +'<div class="sm">驳回原因</div><input class="ta" id="rj" placeholder="如：请携带工牌到 IT 核验">'
+ +'<button class="btn" data-a="approve-pwd" data-id="'+a.id+'">通过，重置密码</button>'
+ +'<button class="btn r" data-a="reject-pwd" data-id="'+a.id+'">驳回</button>'};}
+
+/* ========== 修改申请/我的/等级 ========== */
+function chgReqV(f){
+ var up=f.kind==='level';
+ return {bar:bar(up?'权限升级申请':'提交修改申请'),b:''
+ +'<div class="hint">3 级为浏览权限，修改或升级需提交申请。</div>'
+ +(up?'<div class="card sm">申请升级为 <b>2 级管理员</b>。</div>':'<div class="card sm">申请事项：<b>'+(f.tg||'产品数据')+'</b></div>')
+ +'<div class="sm">'+(up?'升级理由':'修改内容')+'</div>'
+ +'<textarea class="ta" id="cc">'+(up?'因岗位调整，申请开通 2 级权限。':(f.tg&&f.tg.indexOf('BOM')>=0?'端子 2P 替代料增加 J3-B':''))+'</textarea>'
+ +'<div class="sm" style="margin-top:8px">补充说明</div>'
+ +'<textarea class="ta" id="cr">'+(up?'直属主管已同意。':'附客户 / 工程确认依据')+'</textarea>'
+ +'<button class="btn" data-a="submit-chg" data-k="'+(up?'level':'change')+'" data-tg="'+(f.tg||'')+'">提交申请</button>'};}
+function myAppsV(){
+ var mine=S.chgReqs.filter(function(a){return a.who.indexOf('PW-0102')>=0;});
+ var pwd=S.pwdReqs.filter(function(a){return a.who.indexOf('PW-0102')>=0;});
+ return {bar:bar('我的申请'),b:''
+ +'<div class="h2">我的申请记录</div>'
+ +(mine.length?mine.map(function(a){return '<div class="card"><div class="bt"><b>'+a.tg+'</b>'+stB(a.st)+'</div><div class="sm" style="margin-top:4px">'+a.t+' / '+a.id+'<br>'+a.ct+'</div></div>';}).join(''):'<div class="card sm">还没有提交过申请。</div>')
+ +(pwd.length?'<div class="h2">修改密码申请</div>'+pwd.map(function(a){return '<div class="card"><div class="bt"><b>'+a.ac+' 改密</b>'+stB(a.st)+'</div><div class="sm" style="margin-top:4px">'+a.t+' / '+a.id+'</div></div>';}).join(''):'')};}
+function lvV(){
+ var r=[[1,'超级管理员','最高控制','外网控制台、远程停用、审计、审批改密','生成/调整 1/2/3 级权限号'],
+        [2,'管理员','浏览+修改','浏览、修改产品数据；审批 3 级修改；上传基础常识','生成/调整 3 级权限号'],
+        [3,'浏览员','仅浏览+上传首件','查询型号、BOM、异常、备注、基础常识；可上传首件','修改、升级、改密需向上级申请']];
+ return {bar:bar('权限等级说明'),b:r.map(function(x){return '<div class="card"><div class="bt"><b>'+x[0]+' 级 · '+x[1]+'</b><span class="bd l'+x[0]+'">'+x[2]+'</span></div><div class="sm" style="margin-top:6px">权限：'+x[3]+'<br>审批：'+x[4]+'</div></div>';}).join('')
+ +'<div class="card sm"><b>1 级超管登录说明：</b>账号 Admin.li，初始密码 Admin@123，由系统初始化；首次登录在「我的」提示自助修改密码；敏感操作需 MFA。</div>'};}
+
+/* ========== 消息/离线/收藏 ========== */
+var MSG={todo:[['审批结果','XG-2031「端子替代料增加 J3-B」已通过','10-05 09:12'],['申请进度','权限申请 SQ-1005 已提交','10-05 08:02'],['BOM 通知','XH-2401 BOM 已更新至 V1.3','10-04 17:30']],
+ notice:[['质量通报','XH-2401 批次 A2308 电容虚焊','10-05 08:30'],['工艺变更','MK-12B 测试工序增加耐压','10-04 15:00']]};
+function msgV(){return {bar:bar('消息中心'),b:''
+ +'<div class="seg"><button class="'+(S.msgTab==='todo'?'on':'')+'" data-a="msgt" data-x="todo">待办 3</button><button class="'+(S.msgTab==='notice'?'on':'')+'" data-a="msgt" data-x="notice">通知 2</button></div>'
+ +MSG[S.msgTab].map(function(m){return '<div class="card"><div class="bt"><b>'+m[0]+'</b><span class="sm">'+m[2]+'</span></div><div class="sm" style="margin-top:4px">'+m[1]+'</div></div>';}).join('')};}
+function offV(){return {bar:bar('离线包管理'),b:''
+ +'<div class="card"><div class="bt"><b>离线数据</b><span class="bd g">已就绪</span></div><div class="sm" style="margin-top:6px">更新：2026-10-05 08:00</div></div>'
+ +'<div class="g2"><div class="fl"><div class="k">已缓存产品</div><div class="v">128</div></div><div class="fl"><div class="k">BOM / 异常</div><div class="v">96 / 412</div></div><div class="fl"><div class="k">外观图片</div><div class="v">3,240</div></div><div class="fl"><div class="k">占用</div><div class="v">186 MB</div></div></div>'
+ +'<button class="btn" data-a="toast" data-x="演示：离线包已更新">立即更新离线包</button>'};}
+function favV(){var L=PROD.filter(function(p){return S.favs.indexOf(p.id)>=0;});
+ return {bar:bar('我的收藏'),b:''
+ +'<div class="hint">收藏已迁移至「搜索」模块，可在搜索页切换“我的收藏”筛选。</div>'
+ +(L.length?L.map(function(p){return '<div class="card click" data-v="detail" data-id="'+p.id+'"><div class="bt"><b>'+p.id+' '+p.n+'</b>'+favBtn(p.id)+'</div><div class="sm" style="margin-top:3px">客户：'+p.cl.join('、')+' / '+p.v+'</div></div>';}).join(''):'<div class="card sm">还没有收藏产品。</div>')};}
+
+/* ========== 通报 / 使用成员 ========== */
+function noticeListV(){
+ var list=S.notices.slice().sort(function(a,b){return a.t<b.t?1:a.t>b.t?-1:0;});
+ return {bar:bar('公告 / 质量通报',(S.lv<3?'<button class="ib blue" data-v="notice-form" title="发布通报">+</button>':'')),b:''
+ +(S.lv<3?'<div class="hint">1/2 级管理员可点右上角 <b>+</b> 发布质量通报 / 工艺变更，仅展示这两类通报。</div>':'<div class="hint">仅展示质量通报与工艺变更，按发布时间倒序排列。</div>')
+ +list.map(function(n){return '<div class="card notice '+(n.tp==='质量通报'?'r':'o')+'"><div class="bt"><b>'+n.tp+'</b><span class="bd '+(n.tp==='质量通报'?'r':'o')+'">'+n.t+'</span></div>'
+  +'<div class="sm" style="margin-top:4px">制令单号：<b>'+n.mo+'</b><br>产品名称：<b>'+n.p+'</b><br>'+n.d+'<br>发布人：'+n.by+'</div></div>';}).join('')};}
+function noticeFormV(){return {bar:bar('发布通报'),b:''
+ +'<div class="hint">仅 <b>1/2 级管理员</b>可发布；发布后全员首页可见，进入列表按时间倒序展示。</div>'
+ +'<div class="card">'
+ +'<div class="sm">通报类型</div>'
+ +'<div class="seg" style="margin-top:4px">'+['质量通报','工艺变更'].map(function(x){return '<button class="'+(S.nTp===x?'on':'')+'" data-a="ntp" data-x="'+x+'">'+x+'</button>';}).join('')+'</div>'
+ +'<div class="sm" style="margin-top:8px">制令单号 <span class="bd r">必填</span></div><input class="ta" id="nmo" value="MO-2026-1005-03">'
+ +'<div class="sm" style="margin-top:8px">产品名称 <span class="bd r">必填</span></div><input class="ta" id="npn" value="XH-2401 电源板">'
+ +'<div class="sm" style="margin-top:8px">通报内容</div><textarea class="ta" id="nd">批次 A2309 焊点加严抽检</textarea></div>'
+ +'<button class="btn" data-a="submit-notice">发布通报</button>'};}
+function membersV(){
+ var joined=S.users.filter(function(u){return u.st==='正常';});
+ return {bar:bar('使用成员'),b:''
+ +'<div class="hint">已加入 App 的成员共 <b>'+joined.length+'</b> 人（停用账号不展示）。</div>'
+ +joined.map(function(u){return '<div class="card"><div class="bt"><b>'+u.n+'</b><span class="bd l'+u.lv+'">'+u.lv+' 级</span></div>'
+  +'<div class="sm" style="margin-top:4px">账号：'+u.a+' / 权限号：'+u.no+'<br>有效期：'+u.e+' / 登录设备：'+u.d+'</div></div>';}).join('')};}
+
+function meetEditV(){return {bar:bar('设置会议记录链接'),b:''
+ +'<div class="hint">粘贴金山在线文档（WPS 云表格）的分享链接，首页「每日会议记录表」点击即跳转打开。</div>'
+ +'<div class="card">'
+ +'<div class="sm">金山文档链接 <span class="bd r">必填</span></div><input class="ta" id="mu" value="'+S.meetUrl+'"></div>'
+ +'<button class="btn" data-a="save-meet">保存链接</button>'
+ +'<button class="btn o" data-a="back">取消</button>'};}
+function calcHoursV(){return {bar:bar('工时计算器'),b:''
+ +'<div class="hint">在右侧填入数字，下方结果自动计算。</div>'
+ +'<table class="tb"><tr><th style="width:24%">项目</th><th style="width:32%">数值</th><th style="width:16%">单位</th><th style="width:28%">公式说明</th></tr>'
+ +'<tr><td>人数</td><td><input class="ta" id="cp" style="margin:0;padding:5px 8px" value="14"></td><td>人</td><td class="sm">填入计划人数</td></tr>'
+ +'<tr><td>产生工时</td><td><b id="cgen">840</b></td><td>分钟</td><td class="sm">人数 × 60</td></tr>'
+ +'<tr><td>产品数量</td><td><input class="ta" id="cq" style="margin:0;padding:5px 8px" value="350"></td><td>件</td><td class="sm">填入产品数量</td></tr>'
+ +'<tr><td>产品工时</td><td><input class="ta" id="cm" style="margin:0;padding:5px 8px" value="1.9286"></td><td>分钟/件</td><td class="sm">单件标准工时</td></tr>'
+ +'<tr><td>所需分钟</td><td><b id="cneed">675</b></td><td>分钟</td><td class="sm">产品数量 × 产品工时</td></tr>'
+ +'<tr><td>工时</td><td><b id="chour">11.25</b></td><td>小时</td><td class="sm">所需分钟 ÷ 60</td></tr>'
+ +'<tr><td>时均产值</td><td><b id="crate">31.11</b></td><td>件/小时</td><td class="sm">产品数量 ÷ 工时（每小时生产数量）</td></tr></table>'
+ +'<div class="card sm">产生工时为计划投入的总分钟数；时均产值 = 产品数量 ÷ 所需工时（小时），即每小时生产数量。</div>'};}
+function calcHours(){
+ var p=+((document.getElementById('cp')||{}).value||0),q=+((document.getElementById('cq')||{}).value||0),m=+((document.getElementById('cm')||{}).value||0);
+ var need=q*m,hr=need/60,rate=hr>0?q/hr:0;
+ var r=function(x){return Math.round(x*100)/100;};
+ var g1=document.getElementById('cgen');if(g1)g1.textContent=r(p*60);
+ var g2=document.getElementById('cneed');if(g2)g2.textContent=r(need);
+ var g3=document.getElementById('chour');if(g3)g3.textContent=r(hr);
+ var g4=document.getElementById('crate');if(g4)g4.textContent=r(rate);
+}
+function unitConvV(){return {bar:bar('单位换算'),b:''
+ +'<div class="hint">输入任意一侧，另一侧自动换算（分钟 ⇄ 小时）。</div>'
+ +'<div class="card">'
+ +'<div class="sm">分钟</div><input class="ta" id="umin" placeholder="输入分钟数，如 675">'
+ +'<div class="sm" style="margin-top:8px">小时</div><input class="ta" id="uhr" placeholder="输入小时数，如 11.25"></div>'
+ +'<div class="card sm">常用参考：1 小时 = 60 分钟；8 小时 = 480 分钟；11.25 小时 = 675 分钟。</div>'};}
+
+/* ========== 壁纸 ========== */
+var WALLS=[
+ {id:'def',name:'默认浅色',css:'#f8fafc'},
+ {id:'g1',name:'海天蓝',css:'linear-gradient(160deg,#dbeafe,#bfdbfe 55%,#93c5fd)'},
+ {id:'g2',name:'星云紫',css:'linear-gradient(160deg,#fce7f3,#e9d5ff 55%,#c4b5fd)'},
+ {id:'g3',name:'晨光橙',css:'linear-gradient(160deg,#fef3c7,#fed7aa 55%,#fdba74)'},
+ {id:'p1',name:'科技蓝纹',img:'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt='+encodeURIComponent('abstract blue technology geometric texture, clean minimal mobile wallpaper, soft gradient')+'&image_size=portrait_16_9'},
+ {id:'p2',name:'山水墨色',img:'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt='+encodeURIComponent('minimal chinese ink landscape mountains, misty, elegant, light color mobile wallpaper')+'&image_size=portrait_16_9'}
+];
+function wallBg(w){return w.img?('url("'+w.img+'") center/cover'):w.css;}
+function wallpaperV(){
+ var draft=S.wallDraft||S.wall||'def';
+ return {bar:bar('壁纸设置'),b:''
+ +'<div class="hint">选择系统壁纸或上传自定义图片，先预览满意后再应用；卡片仍为白色，不影响阅读。</div>'
+ +'<div class="sm">预览</div><div class="wprev" id="wprev" style="background:'+wallBg(curWall(draft))+'"></div>'
+ +'<button class="btn" data-a="wall-apply">应用壁纸</button>'
+ +'<button class="btn o" data-a="wall-reset">恢复默认</button>'
+ +'<div class="h2">系统壁纸</div><div class="wall-grid">'
+ +WALLS.map(function(w){return '<button class="wall '+(draft===w.id?'on':'')+'" style="background:'+wallBg(w)+'" data-a="wall-pick" data-x="'+w.id+'"><span class="tick">已选</span><span style="position:absolute;left:7px;bottom:6px;font-size:10px;font-weight:700;color:'+(w.id==='def'||w.id.indexOf('g')===0?'#1e293b':'#fff')+';text-shadow:0 1px 3px rgba(0,0,0,.35)">'+w.name+'</span></button>';}).join('')+'</div>'
+ +'<div class="h2">自定义</div>'
+ +'<button class="upzone" data-a="pick-wall">'+SV.image+'<div>上传自定义图片</div><div class="sm">JPG / PNG，建议竖屏比例</div></button>'
+ +'<input type="file" id="wfile" accept="image/*" style="display:none">'};}
+function curWall(id){
+ if(id==='def'||id==='')return WALLS[0];
+ for(var i=0;i<WALLS.length;i++)if(WALLS[i].id===id)return WALLS[i];
+ if(id.indexOf('url(')===0)return {id:'custom',css:id+' center/cover'};
+ if(id.indexOf('data:')===0)return {id:'custom',css:'url("'+id+'") center/cover'};
+ return {id:'custom',css:id};
+}
+function applyWallpaper(){
+ var ph=document.getElementById('phone');if(!ph)return;
+ if(!S.wall||S.wall==='def'){ph.style.background='';ph.style.backgroundSize='';return;}
+ var w=curWall(S.wall);
+ if(w.img){ph.style.background='url("'+w.img+'") center/cover no-repeat';}
+ else{ph.style.background=w.css;ph.style.backgroundSize='';}
+}
+
+/* ========== 我的 ========== */
+function p1(){return ''
+ +'<div class="h2">我的 <span class="bd l1">1级 · 超级管理员</span></div>'
+ +'<div class="card"><div class="rl"><span class="l">账号</span><b>Admin.li</b></div><div class="rl"><span class="l">权限号</span><b>PW-0001</b></div><div class="rl"><span class="l">设备</span><span class="bd g">已绑定+MFA</span></div></div>'
+ +'<div class="hint">1 级超管首次登录会看到这条横幅，点「修改密码」走自助流程。</div>'
+ +'<div class="card" style="border-color:#fbbf24;background:#fffbeb"><div class="bt"><span style="color:#92400e;font-weight:700">您当前使用初始密码</span><button class="btn s" data-v="pwd-self" style="background:#d97706">修改密码</button></div></div>'
+ +'<div class="h2">管理</div>'
+ +'<div class="card">'
+ +'<div class="rl" data-v="appr"><span class="l">审批中心</span>'+SV.ch+'</div>'
+ +'<div class="rl" data-v="users"><span class="l">权限号管理</span>'+SV.ch+'</div>'
+ +'<div class="rl" data-v="console"><span class="l">外网最高控制台</span>'+SV.ch+'</div>'
+ +'<div class="rl" data-v="audit"><span class="l">审计日志</span>'+SV.ch+'</div>'
+ +'<div class="rl" data-r="sync"><span class="l">ERP 同步 / 上传审核</span>'+SV.ch+'</div>'
+ +'<div class="rl" data-v="lv"><span class="l">权限等级说明</span>'+SV.ch+'</div></div>'
+ +'<div class="h2">安全</div>'
+ +'<div class="card">'
+ +'<div class="rl" data-v="pwd-self"><span class="l">修改密码（自助）</span>'+SV.ch+'</div>'
+ +'<div class="rl" data-v="super-recover"><span class="l">恢复码 / 应急通道</span>'+SV.ch+'</div></div>'
+ +'<div class="h2">个性化</div><div class="card"><div class="rl" data-v="wallpaper"><span class="l">'+SV.image+' 壁纸设置</span>'+SV.ch+'</div></div>'
+ +'<div class="card">'
+ +'<div class="rl" data-a="switch-role"><span class="l">切换演示身份</span>'+SV.ch+'</div>'
+ +'<div class="rl" data-a="logout"><span class="l">退出登录</span>'+SV.ch+'</div></div>';}
+function p2(){return ''
+ +'<div class="h2">我的 <span class="bd l2">2级 · 管理员</span></div>'
+ +'<div class="card"><div class="rl"><span class="l">账号</span><b>Li.si</b></div><div class="rl"><span class="l">权限号</span><b>PW-0018</b></div><div class="rl"><span class="l">设备</span><span class="bd g">已绑定</span></div></div>'
+ +'<div class="h2">管理</div>'
+ +'<div class="card">'
+ +'<div class="rl" data-v="appr"><span class="l">审批中心</span>'+SV.ch+'</div>'
+ +'<div class="rl" data-v="users"><span class="l">3 级账号管理</span>'+SV.ch+'</div>'
+ +'<div class="rl" data-r="sync"><span class="l">ERP 同步</span>'+SV.ch+'</div>'
+ +'<div class="rl" data-v="know"><span class="l">基础常识（可上传）</span>'+SV.ch+'</div>'
+ +'<div class="rl" data-v="lv"><span class="l">权限等级说明</span>'+SV.ch+'</div></div>'
+ +'<div class="h2">申请</div>'
+ +'<div class="card"><div class="rl" data-v="pwd-apply"><span class="l">申请修改密码</span>'+SV.ch+'</div></div>'
+ +'<div class="h2">个性化</div><div class="card"><div class="rl" data-v="wallpaper"><span class="l">'+SV.image+' 壁纸设置</span>'+SV.ch+'</div></div>'
+ +'<div class="card">'
+ +'<div class="rl" data-a="switch-role"><span class="l">切换演示身份</span>'+SV.ch+'</div>'
+ +'<div class="rl" data-a="logout"><span class="l">退出登录</span>'+SV.ch+'</div></div>';}
+function p3(){return ''
+ +'<div class="h2">我的 <span class="bd l3">3级 · 浏览员</span></div>'
+ +'<div class="card"><div class="rl"><span class="l">账号</span><b>Zhang.san</b></div><div class="rl"><span class="l">权限号</span><b>PW-0102</b></div><div class="rl"><span class="l">剩余次数</span><b>28</b></div><div class="rl"><span class="l">有效期</span><b>2026-12-31</b></div></div>'
+ +'<div class="hint">3 级可<b>上传首件信息</b>；其它数据修改仍走申请。</div>'
+ +'<div class="h2">常用操作</div>'
+ +'<div class="card">'
+ +'<div class="rl" data-v="fa-form"><span class="l">提交首件</span>'+SV.ch+'</div>'
+ +'<div class="rl" data-v="my-apps"><span class="l">我的申请记录</span>'+SV.ch+'</div></div>'
+ +'<div class="h2">申请</div>'
+ +'<div class="card">'
+ +'<div class="rl" data-v="chg-req" data-tg="产品数据"><span class="l">申请修改产品数据</span>'+SV.ch+'</div>'
+ +'<div class="rl" data-v="chg-req" data-kind="level"><span class="l">申请升级权限</span>'+SV.ch+'</div>'
+ +'<div class="rl" data-v="pwd-apply"><span class="l">申请修改密码</span>'+SV.ch+'</div>'
+ +'<div class="rl" data-v="lv"><span class="l">权限等级说明</span>'+SV.ch+'</div></div>'
+ +'<div class="h2">个性化</div><div class="card"><div class="rl" data-v="wallpaper"><span class="l">'+SV.image+' 壁纸设置</span>'+SV.ch+'</div></div>'
+ +'<div class="card">'
+ +'<div class="rl" data-a="switch-role"><span class="l">切换演示身份</span>'+SV.ch+'</div>'
+ +'<div class="rl" data-a="logout"><span class="l">退出登录</span>'+SV.ch+'</div></div>';}
+function profileV(){return {nav:nav('profile'),b:S.lv===1?p1():S.lv===2?p2():p3()};}
+
+/* ========== 渲染 ========== */
+var app=document.getElementById('app');
+function updTg(){
+ var t=document.getElementById('tg');
+ if(!t)return;
+ t.classList.toggle('show',!!(S.auth&&S.lv===1&&!S.ext));
+ var bs=t.querySelectorAll('button');
+ for(var i=0;i<bs.length;i++)bs[i].classList.toggle('on',bs[i].getAttribute('data-m')===S.mode);
+}
+function render(){
+ var f=cur(),v;
+ switch(f.v){
+  case 'login':v=loginV();break;
+  case 'super-recover':v=superRecoverV();break;
+  case 'home':v=homeV();break;
+  case 'search':v=searchV();break;
+  case 'detail':v=detailV(f);break;
+  case 'checksum':v=checksumV();break;
+  case 'shell':v=shellV();break;
+  case 'sync':v=syncV(!f.push);break;
+  case 'fa-list':v=faListV();break;
+  case 'fa-form':v=faFormV();break;
+  case 'abn-hours':v=abnV();break;
+  case 'prod-abn':v=prodAbnV();break;
+  case 'spec-book':v=specBookV();break;
+  case 'proc-imp':v=procV();break;
+  case 'sample-query':v=sampleV();break;
+  case 'sample-add':v=sampleAddV();break;
+  case 'know':v=knowV();break;
+  case 'know-form':v=knowFormV();break;
+  case 'meet-edit':v=meetEditV();break;
+  case 'calc-hours':v=calcHoursV();break;
+  case 'unit-conv':v=unitConvV();break;
+  case 'scan':v=scanV();break;
+  case 'wx-auth':v=wxAuthV();break;
+  case 'apply-perm':v=applyFormV('提交权限申请','submit-apply');break;
+  case 'apply-login':v=applyFormV('申请权限','submit-apply');break;
+  case 'apply-tourist':v=touristApplyV();break;
+  case 'done':v=doneV(f);break;
+  case 'pwd-apply':v=pwdApplyV();break;
+  case 'pwd-self':v=pwdSelfV();break;
+  case 'appr':v=apprV();break;
+  case 'rev-scan':v=revScanV(f);break;
+  case 'rev-chg':v=revChgV(f);break;
+  case 'rev-pwd':v=revPwdV(f);break;
+  case 'chg-req':v=chgReqV(f);break;
+  case 'my-apps':v=myAppsV();break;
+  case 'lv':v=lvV();break;
+  case 'messages':v=msgV();break;
+  case 'offline':v=offV();break;
+  case 'fav':v=favV();break;
+  case 'notice-list':v=noticeListV();break;
+  case 'notice-form':v=noticeFormV();break;
+  case 'members':v=membersV();break;
+  case 'wallpaper':v=wallpaperV();break;
+  case 'users':v=usersV();break;
+  case 'console':v=consoleV();break;
+  case 'audit':v=auditV();break;
+  case 'profile':v=profileV();break;
+  default:v=loginV();
+ }
+ app.innerHTML=(v.bar||'')+'<div class="sc">'+v.b+'</div>'+(v.nav||'')+pager();
+ document.getElementById('phone').classList.toggle('has-nav',!!v.nav);
+ var sc=app.querySelector('.sc');if(sc)sc.scrollTop=0;
+ if(f.v==='search'){
+  renderResults();
+  var qi=document.getElementById('qi');
+  if(qi)qi.addEventListener('input',function(e){S.q=e.target.value;renderResults();});
+ }
+ if(f.v==='sample-query'){
+  renderSamples();
+  var sk=document.getElementById('skw');
+  if(sk)sk.addEventListener('input',function(e){S.skw=e.target.value;renderSamples();});
+ }
+ if(f.v==='calc-hours'){
+  ['cp','cq','cm'].forEach(function(id){var elc=document.getElementById(id);if(elc)elc.addEventListener('input',calcHours);});
+ }
+ if(f.v==='unit-conv'){
+  var um=document.getElementById('umin'),uh=document.getElementById('uhr');
+  if(um)um.addEventListener('input',function(){var x=parseFloat(um.value);uh.value=isNaN(x)?'':Math.round(x/60*10000)/10000;});
+  if(uh)uh.addEventListener('input',function(){var x=parseFloat(uh.value);um.value=isNaN(x)?'':Math.round(x*60*100)/100;});
+ }
+ if(f.v==='know'){
+  var kfi2=document.getElementById('kfile');
+  if(kfi2)kfi2.addEventListener('change',function(){
+   var file=kfi2.files[0];if(!file)return;
+   if(file.size>20*1024*1024){toast('文件不能超过 20MB');return;}
+   var isImg=file.type.indexOf('image/')===0,rd=new FileReader();
+   rd.onload=function(){
+    S.know.unshift({t:file.name,c:isImg?'图片':'附件',d:(isImg?'上传图片':'点击打开附件')+' · '+(Math.round(file.size/1024))+'KB',img:isImg?rd.result:'',file:!isImg});
+    render();toast('已上传：'+file.name);
+   };
+   rd.readAsDataURL(file);
+  });
+ }
+ if(f.v==='wallpaper'){
+  var wfi2=document.getElementById('wfile');
+  if(wfi2)wfi2.addEventListener('change',function(){
+   var file=wfi2.files[0];if(!file)return;
+   if(file.type.indexOf('image/')!==0){toast('请选择图片文件');return;}
+   var rd=new FileReader();
+   rd.onload=function(){
+    S.wallDraft=rd.result;
+    var pv2=document.getElementById('wprev');if(pv2)pv2.style.background='url("'+rd.result+'") center/cover';
+    var ws=document.querySelectorAll('.wall');for(var i=0;i<ws.length;i++)ws[i].classList.remove('on');
+    toast('已载入预览，点「应用壁纸」生效');
+   };
+   rd.readAsDataURL(file);
+  });
+ }
+ applyWallpaper();
+ updTg();
+}
+
+var L1=['console'],MGR=['users','appr','rev-scan','rev-chg','rev-pwd','notice-form','know-form','meet-edit'],EXT=['scan','wx-auth','apply-perm','apply-login','apply-tourist','done'];
+function lock(){S.stack=[{v:'login'}];S.fwd=[];render();toast('请先登录');}
+function go(v,o){
+ if(!S.auth&&!(S.ext&&EXT.indexOf(v)>=0)){lock();return;}
+ if(L1.indexOf(v)>=0&&S.lv!==1){toast('仅 1 级超管可访问');return;}
+ if(MGR.indexOf(v)>=0&&S.lv===3){toast('3 级为浏览权限');return;}
+ S.fwd=[];
+ S.stack.push(Object.assign({v:v},o||{}));render();
+}
+function goR(v){
+ if(!S.auth&&v!=='login'&&!(S.ext&&EXT.indexOf(v)>=0)){lock();return;}
+ S.fwd=[];
+ S.stack=[{v:v}];render();
+}
+function back(){
+ if(S.stack.length<=1)return;
+ if(S.ext){S.fwd.push(S.stack.pop());if(cur().v==='login'){S.ext=0;S.wx=null;}render();return;}
+ if(!S.auth){lock();return;}
+ S.fwd.push(S.stack.pop());render();
+}
+function fwd(){
+ if(!S.fwd.length)return;
+ var n=S.fwd.pop();
+ if(!S.auth&&!(S.ext&&EXT.indexOf(n.v)>=0)&&n.v!=='login'){lock();return;}
+ S.stack.push(n);render();
+}
+function startExt(){S.auth=0;S.ext=1;S.wx={n:'阿强',wx:'wxid_aqiang',from:'ext'};S.fwd=[];S.stack=[{v:'login'},{v:'scan'}];render();}
+var tt=null;
+function toast(m){var e=document.getElementById('toast');if(!e)return;e.textContent=m;e.classList.add('on');clearTimeout(tt);tt=setTimeout(function(){e.classList.remove('on');},1800);}
+
+/* 开关：绑到 #tg 元素本身（它在 #app 外，不会被替换） */
+(function(){
+ var tg=document.getElementById('tg');
+ tg.addEventListener('click',function(e){
+  var btn=e.target.closest?e.target.closest('button[data-m]'):null;
+  if(!btn)return;
+  S.mode=btn.getAttribute('data-m');
+  if(S.mode==='formal')document.body.classList.add('formal');else document.body.classList.remove('formal');
+  updTg();
+  toast(S.mode==='formal'?'已切到正式模式：隐藏所有原型提示':'已切到原型模式：显示设计说明');
+ });
+})();
+
+/* 应用区事件代理 */
+app.addEventListener('click',function(e){
+ var r=e.target.closest('[data-r]');
+ if(r){goR(r.getAttribute('data-r'));return;}
+ var a=e.target.closest('[data-a]'),v=e.target.closest('[data-v]'),t=e.target.closest('[data-tab],[data-t]'),ff=e.target.closest('[data-f]');
+ if(a){
+  var k=a.getAttribute('data-a');
+  if(k==='login'){S.auth=1;S.lv=+S.id;S.ext=0;goR('home');return;}
+  if(k==='id'){var x=a.getAttribute('data-x');S.id=x;S.lv=+x;render();return;}
+  if(k==='go-apply'){S.ext=1;S.wx=null;go('apply-tourist');return;}
+  if(k==='switch-role'){var o=['1','2','3'];S.id=o[(o.indexOf(S.id)+1)%3]||'1';S.lv=+S.id;render();toast('已切换为 '+S.id+' 级');return;}
+  if(k==='scan-done'){go('wx-auth');return;}
+  if(k==='wx-ok'){go('apply-perm');return;}
+  if(k==='submit-apply'){
+   var ph=(document.getElementById('ap')||{}).value||'';var nn=(document.getElementById('an')||{}).value||'';
+   var ps=(document.getElementById('ao')||{}).value||'—';var wx=(document.getElementById('aw')||{}).value||'';
+   var no='SQ-'+(S.seq.sq++);
+   S.scanReqs.unshift({id:no,n:nn,wx:wx,ph:ph,pos:ps,t:'10-05 10:02',why:'车间产线查询产品型号、BOM 和历史异常',st:'pending',src:'form'});
+   go('done',{kind:'scan',no:no});return;
+  }
+  if(k==='submit-tourist'){
+   var tph=((document.getElementById('ap')||{}).value||'').trim();
+   var tnn=((document.getElementById('an')||{}).value||'').trim();
+   var tps=((document.getElementById('ao')||{}).value||'').trim();
+   if(!/^1\d{10}$/.test(tph)){toast('请填写正确的 11 位手机号');return;}
+   if(!tnn){toast('请填写姓名');return;}
+   if(!tps){toast('请填写岗位');return;}
+   if(S.scanReqs.some(function(x){return x.ph===tph&&x.st==='pending';})
+     ||S.users.some(function(x){return x.a===tph;})){toast('该手机号已申请或已开通');return;}
+   var tno='SQ-'+(S.seq.sq++);
+   S.scanReqs.unshift({id:tno,n:tnn,wx:'—',ph:tph,pos:tps,t:'10-05 10:05',why:'登录页申请，岗位：'+tps,st:'pending',src:'tourist'});
+   go('done',{kind:'scan',no:tno,from:'tourist'});return;
+  }
+  if(k==='done-close'){S.ext=0;if(S.auth)goR('home');else{S.wx=null;goR('login');}return;}
+  if(k==='apt'){S.apTab=a.getAttribute('data-x');render();return;}
+  if(k==='open-rev'){var kd=a.getAttribute('data-k');S.draft={lv:S.lv===2?3:2,exp:'1年',cnt:50};
+   go(kd==='scan'?'rev-scan':kd==='pwd'?'rev-pwd':'rev-chg',{id:a.getAttribute('data-id')});return;}
+  if(k==='pick'){var kk=a.getAttribute('data-k'),vv=a.getAttribute('data-x');if(kk==='lv'||kk==='cnt')vv=+vv;S.draft[kk]=vv;render();return;}
+  if(k==='approve-scan'){
+   var ap=S.scanReqs.filter(function(x){return x.id===a.getAttribute('data-id');})[0],d=S.draft;
+   if(S.lv===2&&d.lv!==3){toast('2 级只能授予 3 级权限');return;}
+   var n2='PW-0'+(S.seq.pw++);ap.st='approved';ap.lv=d.lv;ap.no=n2;
+   S.users.push({no:n2,n:ap.n,a:ap.ph||('wx_'+(S.seq.pw)),lv:d.lv,e:d.exp,c:d.lv===3?(''+d.cnt):'不限',d:(ap.src==='tourist'?'手机号注册':'微信'),st:'正常'});
+   S.stack.pop();render();toast('已生成账号 '+(ap.ph||n2)+'，默认密码 123');return;
+  }
+  if(k==='reject-scan'){var r2=(document.getElementById('rj')||{}).value||'';if(!r2){toast('请先填写驳回原因');return;}
+   S.scanReqs.filter(function(x){return x.id===a.getAttribute('data-id');})[0].st='rejected';S.stack.pop();render();toast('已驳回');return;}
+  if(k==='approve-chg'){S.chgReqs.filter(function(x){return x.id===a.getAttribute('data-id');})[0].st='approved';S.stack.pop();render();toast('已通过');return;}
+  if(k==='reject-chg'){var r3=(document.getElementById('rj')||{}).value||'';if(!r3){toast('请先填写驳回原因');return;}
+   S.chgReqs.filter(function(x){return x.id===a.getAttribute('data-id');})[0].st='rejected';S.stack.pop();render();toast('已驳回');return;}
+  if(k==='approve-pwd'){S.pwdReqs.filter(function(x){return x.id===a.getAttribute('data-id');})[0].st='approved';S.stack.pop();render();toast('已通过，密码已重置');return;}
+  if(k==='reject-pwd'){var r4=(document.getElementById('rj')||{}).value||'';if(!r4){toast('请先填写驳回原因');return;}
+   S.pwdReqs.filter(function(x){return x.id===a.getAttribute('data-id');})[0].st='rejected';S.stack.pop();render();toast('已驳回');return;}
+  if(k==='submit-chg'){
+   var cc=(document.getElementById('cc')||{}).value||'',cr=(document.getElementById('cr')||{}).value||'';
+   var no3='XG-'+(S.seq.xg++),kd2=a.getAttribute('data-k'),tg2=kd2==='level'?'权限升级':(a.getAttribute('data-tg')||'产品数据');
+   S.chgReqs.unshift({id:no3,who:'张三 PW-0102',t:'10-05 10:02',tg:tg2,ct:cc,why:cr,st:'pending'});
+   go('done',{kind:'change',no:no3});return;
+  }
+  if(k==='submit-pwd'){var no4='PW-'+(S.seq.pwd++);
+   S.pwdReqs.unshift({id:no4,who:'张三 PW-0102',t:'10-05 10:02',ac:'Zhang.san',why:'忘记原密码，申请重置',st:'pending'});
+   go('done',{kind:'pwd',no:no4});return;
+  }
+  if(k==='submit-self'){toast('演示：密码已修改，请重新登录');
+   setTimeout(function(){S.auth=0;S.fwd=[];S.stack=[{v:'login'}];render();},800);return;}
+  if(k==='submit'){toast('演示：'+a.getAttribute('data-x')+'已提交');return;}
+  if(k==='submit-sample'){
+   var si=(document.getElementById('si')||{}).value||'';
+   var sp=(document.getElementById('sp')||{}).value||'';
+   var sn=(document.getElementById('sn')||{}).value||'';
+   var sc=(document.getElementById('sc')||{}).value||'';
+   var sq=(document.getElementById('sq')||{}).value||'1';
+   S.samples.unshift({id:si,p:sp,n:sn,c:sc,q:sq,st:'在库'});
+   back();toast('样品已添加');return;
+  }
+  if(k==='submit-fa'){
+   var fo=(document.getElementById('fo')||{}).value||'';
+   var fn=(document.getElementById('fn')||{}).value||'';
+   var fd=(document.getElementById('fd')||{}).value||'';
+   var no5='FA-'+Date.now().toString().slice(-6);
+   var sub=S.lv===3?'张三 PW-0102':S.lv===2?'李四 PW-0018':'李建国 PW-0001';
+   S.fa.unshift({id:no5,ord:fo,p:fn.split(' ')[0]||'—',n:fn,dt:fd,sub:sub,st:'SMT/L1',state:'待品质审核',ph:0});
+   back();toast('首件已提交，待品质审核');return;
+  }
+  if(k==='hist'){S.q=a.getAttribute('data-x');goR('search');return;}
+  if(k==='sf'){S.sf=a.getAttribute('data-x');render();return;}
+  if(k==='abn-type'){S.abnType=a.getAttribute('data-x');render();toast('已选择：'+S.abnType);return;}
+  if(k==='pa-type'){S.paType=a.getAttribute('data-x');render();return;}
+  if(k==='fav-toggle'){
+   var fid=a.getAttribute('data-id'),fi=S.favs.indexOf(fid);
+   if(fi>=0)S.favs.splice(fi,1);else S.favs.push(fid);
+   render();toast(fi>=0?'已取消收藏':'已收藏：'+fid);return;
+  }
+  if(k==='fav-tab'){S.favTab=+a.getAttribute('data-x');render();return;}
+  if(k==='note-cust'){var nc=a.getAttribute('data-x'),nd=NOTES[nc];toast(nc+'备注：'+nd.txt);return;}
+  if(k==='open-doc'){toast('正在打开：'+a.getAttribute('data-x'));return;}
+  if(k==='submit-abn'){
+   var aw=(document.getElementById('awho')||{}).value||'',am=+(document.getElementById('amin')||{}).value||0;
+   if(!aw.trim()){toast('请填写申请人');return;}
+   S.abnRecs.unshift({who:aw.trim(),type:S.abnType,mins:am,
+    batch:(document.getElementById('abatch')||{}).value||'—',
+    desc:(document.getElementById('adesc')||{}).value||'—',t:'2026-10-06 09:30'});
+   render();toast('异常工时申请已提交');return;
+  }
+  if(k==='submit-pa'){
+   var pw=(document.getElementById('pawho')||{}).value||'',pp=(document.getElementById('pap')||{}).value||'',pdv=(document.getElementById('padesc')||{}).value||'';
+   if(!pw.trim()||!pp.trim()){toast('请填写申请人和产品 / 批次');return;}
+   S.paRecs.unshift({who:pw.trim(),p:pp.trim(),type:S.paType,desc:pdv.trim()||'—',t:'2026-10-06 09:30'});
+   render();toast(S.paType+'已上报');return;
+  }
+  if(k==='pick-file'){var kfi=document.getElementById('kfile');if(kfi)kfi.click();return;}
+  if(k==='pick-wall'){var wfi=document.getElementById('wfile');if(wfi)wfi.click();return;}
+  if(k==='wall-pick'){S.wallDraft=a.getAttribute('data-x');
+   var pv=document.getElementById('wprev');if(pv)pv.style.background=wallBg(curWall(S.wallDraft));
+   a.parentNode.querySelectorAll('.wall').forEach(function(x){x.classList.remove('on');});a.classList.add('on');return;}
+  if(k==='wall-apply'){
+   if(S.wallDraft===''){toast('请先选择壁纸');return;}
+   S.wall=S.wallDraft;applyWallpaper();back();toast('壁纸已应用');return;}
+  if(k==='wall-reset'){S.wall='def';S.wallDraft='def';applyWallpaper();back();toast('已恢复默认壁纸');return;}
+  if(k==='ntp'){S.nTp=a.getAttribute('data-x');render();return;}
+  if(k==='submit-notice'){
+   var nmo=(document.getElementById('nmo')||{}).value||'';
+   var npn=(document.getElementById('npn')||{}).value||'';
+   var nd=(document.getElementById('nd')||{}).value||'';
+   if(!nmo.trim()||!npn.trim()){toast('请填写制令单号和产品名称');return;}
+   var nby=S.lv===2?'李四 PW-0018':'李建国 PW-0001';
+   S.notices.unshift({id:'TB-'+(S.seq.tb++),tp:S.nTp,mo:nmo.trim(),p:npn.trim(),d:nd.trim()||'—',t:'2026-10-05 10:05',by:nby});
+   back();toast(S.nTp+'已发布');return;
+  }
+  if(k==='meet-open'){window.open(S.meetUrl,'_blank');toast('正在打开金山在线文档');return;}
+  if(k==='save-meet'){var mu=((document.getElementById('mu')||{}).value||'').trim();
+   if(mu.indexOf('http')!==0){toast('请填写有效的文档链接');return;}
+   S.meetUrl=mu;back();toast('会议记录链接已更新');return;}
+  if(k==='submit-know'){
+   var kt=((document.getElementById('kt')||{}).value||'').trim();
+   var kp=((document.getElementById('kp')||{}).value||'').trim();
+   var kdc=((document.getElementById('kd2')||{}).value||'').trim();
+   if(!kt){toast('请填写标题');return;}
+   if(!kdc){toast('请填写内容');return;}
+   S.know.unshift({t:kt,c:'自定义',d:kdc,img:kp});
+   back();toast('常识已添加');return;
+  }
+  if(k==='msgt'){S.msgTab=a.getAttribute('data-x');render();return;}
+  if(k==='back'){back();return;}
+  if(k==='fwd'){fwd();return;}
+  if(k==='logout'){S.auth=0;S.ext=0;S.fwd=[];S.stack=[{v:'login'}];render();toast('已退出');return;}
+  if(k==='sync-now'){if(S.lv===3){toast('3 级不可同步');return;}S.lastSync='2026-10-05 09:41';render();toast('已同步');return;}
+  if(k==='tgl'){S.global=S.global?0:1;
+   if(!S.global){S.auth=0;S.ext=0;S.fwd=[];S.stack=[{v:'login'}];render();toast('全局已关闭');return;}
+   a.classList.toggle('on',S.global);toast('全局已开启');return;}
+  if(k==='fill'){var i=+a.getAttribute('data-i');var p=S.parts[i];p.m='NTC-10K';p.q=1;p.s='手动';render();toast('已补录');return;}
+  if(k==='toast'){toast(a.getAttribute('data-x'));return;}
+  return;
+ }
+ if(v){
+  var vv=v.getAttribute('data-v'),o={};
+  var id=v.getAttribute('data-id');if(id)o.id=id;
+  var tab=v.getAttribute('data-tab');if(tab)o.tab=tab;
+  var push=v.getAttribute('data-push');if(push)o.push=1;
+  var tg=v.getAttribute('data-tg');if(tg)o.tg=tg;
+  var kd3=v.getAttribute('data-kind');if(kd3)o.kind=kd3;
+  go(vv,o);return;
+ }
+ if(t){cur().tab=t.getAttribute('data-t')||t.getAttribute('data-tab');render();return;}
+ if(ff){
+  var f2=ff.getAttribute('data-f');
+  if(f2==='reset'){S.fShell=0;S.fV24=0;}else if(f2==='shell'){S.fShell=S.fShell?0:1;}else{S.fV24=S.fV24?0:1;}
+  render();return;
+ }
+});
+render();
+</script>
+</body>
+</html>
